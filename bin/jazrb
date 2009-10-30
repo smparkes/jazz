@@ -3,4 +3,9 @@ ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE_
 INTRO = File.join(JAZ_DIR, "intro.js")
 OUTRO = File.join(JAZ_DIR, "outro.js")
 
-system "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
+if ARGV.detect { |f| f =~  /\.x?html?$/ }
+  system "envjsrb #{ARGV.join(" ")}"
+else
+  system "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
+end
+

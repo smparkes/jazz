@@ -11,16 +11,22 @@ From the root of a project, i.e., the parent of the <tt>spec</tt>
 directory, you can use the <tt>jazrb</tt> command as you would the
 rspec <tt>spec</tt> comand, e.g.,
 
-     jazrb spec/foo_spec.js
+     jazrb spec/foo_spec.js spec/bar_spec.js
+
+You can also execute an html spec via jazrb:
+
+     jazrb spec/foo_spec.html
+
+The html fixture must load the necessary test files. Currently, only one fixture can be run per <tt>jazrb</tt> command.
 
 To run all the tests in the <tt>spec</tt> directory repeatedly, use <tt>autojaz</tt> as
 you would use <tt>autospec</tt>:
 
    autojaz
 
-(You'll need to install the ZenTest gem if you don't have it
+You'll need to install the ZenTest gem if you don't have it
 installed; <tt>jazrb</tt> can be used without ZenTest installed, but <tt>autojaz</tt>
-cannot be.)
+cannot be. autojaz does not (and currently cannot) load html fixtures.
 
 Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
