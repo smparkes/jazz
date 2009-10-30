@@ -1,17 +1,22 @@
 = jazrb
 
-Jazrb provides support for running specs written using the Jasmine BDD framework under env.js. Includes support for running via autotest using the autojaz command.
+Jazrb provides support for running specs written using the Jasmine BDD
+framework under <tt>env.js</tt>. It includes support for running via
+<tt>autotest</tt> using the <tt>autojaz</tt> command.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== Use
+
+From the root of a project, i.e., the parent of the <tt>spec</tt> directory,
+you can the <tt>jazrb</tt> command as you would the rspec <tt>spec</tt> comand, e.g.,
+
+     jazrb spec/foo_spec.js
+
+To run all the tests in the <tt>spec</tt> directory repeatedly, use <tt>autojaz</tt> as
+you would use <tt>autospec</tt>:
+
+   autojaz
+
+Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
 == Copyright
 
