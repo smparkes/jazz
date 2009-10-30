@@ -2,13 +2,14 @@
 
 Jazrb provides support for running JavaScript specs written using the
 Jasmine Javascript BDD framework under <tt>env.js</tt>. It includes
-support for running via <tt>autotest</tt> using the <tt>autojaz</tt>
+support for running via autotest using the <tt>autojaz</tt>
 command.
 
 == Use
 
-From the root of a project, i.e., the parent of the <tt>spec</tt> directory,
-you can the <tt>jazrb</tt> command as you would the rspec <tt>spec</tt> comand, e.g.,
+From the root of a project, i.e., the parent of the <tt>spec</tt>
+directory, you can use the <tt>jazrb</tt> command as you would the
+rspec <tt>spec</tt> comand, e.g.,
 
      jazrb spec/foo_spec.js
 
@@ -16,6 +17,10 @@ To run all the tests in the <tt>spec</tt> directory repeatedly, use <tt>autojaz<
 you would use <tt>autospec</tt>:
 
    autojaz
+
+(You'll need to install the ZenTest gem if you don't have it
+installed; <tt>jazrb</tt> can be used without ZenTest installed, but <tt>autojaz</tt>
+cannot be.)
 
 Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
