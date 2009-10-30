@@ -1,0 +1,3 @@
+[submodule "vendor/jasmine"]
+	path = vendor/jasmine
+	url = git://github.com/smparkes/jasmine.git

@@ -1,17 +1,20 @@
 require 'rubygems'
 require 'rake'
 
+task :gemspec => :jasmine
+
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "autojaz"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.name = "smparkes.jazrb"
+    gem.summary = %Q{Env.js support for running Jasmine JS BDD specs}
+    gem.description = %Q{Jazrb provides support for running specs based on the Jasmine JS BDD using the env.js JavaScript browser environment. Includes support for running under autotest via the autojaz command.}
     gem.email = "smparkes@smparkes.net"
-    gem.homepage = "http://github.com/smparkes/autojaz"
+    gem.homepage = "http://github.com/smparkes/jazrb"
     gem.authors = ["Steven Parkes"]
-    gem.add_development_dependency "thoughtbot-shoulda"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.add_runtime_dependency "smparkes.envjs"
+    gem.add_development_dependency "ragaskar-jsdoc_helper"
+    gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec}/**/*"]
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
@@ -50,7 +53,22 @@ Rake::RDocTask.new do |rdoc|
   end
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "autojaz #{version}"
+  rdoc.title = "jazrb #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :jasmine do
+  # system "cd vendor/jasmine && rake jasmine:build"
+  rm_rf "doc/jasmine"
+  mkdir_p "doc/jasmine"
+  cp_r "vendor/jasmine/doc/.", "doc/jasmine/."
+  rm_rf "lib/jazrb/jasmine"
+  mkdir_p "lib/jazrb/jasmine"
+  cp Dir["vendor/jasmine/lib/jasmine-*.js"][0], "lib/jazrb/jasmine/jasmine.js"
+  cp Dir["vendor/jasmine/lib/*.js"], "lib/jazrb/jasmine"
+end
+
+# Local Variables:
+# mode:ruby
+# End:

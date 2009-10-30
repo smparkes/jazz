@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
+INTRO = File.join(JAZ_DIR, "intro.js")
+OUTRO = File.join(JAZ_DIR, "outro.js")
+
+system "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"

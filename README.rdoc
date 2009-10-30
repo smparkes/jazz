@@ -1,6 +1,6 @@
-= autojaz
+= jazrb
 
-Description goes here.
+Jazrb provides support for running specs written using the Jasmine BDD framework under env.js. Includes support for running via autotest using the autojaz command.
 
 == Note on Patches/Pull Requests
  
