@@ -1,8 +1,9 @@
 = jazrb
 
-Jazrb provides support for running specs written using the Jasmine BDD
-framework under <tt>env.js</tt>. It includes support for running via
-<tt>autotest</tt> using the <tt>autojaz</tt> command.
+Jazrb provides support for running JavaScript specs written using the
+Jasmine Javascript BDD framework under <tt>env.js</tt>. It includes
+support for running via <tt>autotest</tt> using the <tt>autojaz</tt>
+command.
 
 == Use
 
