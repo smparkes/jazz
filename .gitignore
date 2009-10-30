@@ -5,3 +5,5 @@ rdoc
 pkg
 /doc/jasmine
 /lib/jazrb/jasmine
+/*jazrb-*.gem
+/*jazrb.gemspec

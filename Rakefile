@@ -59,7 +59,7 @@ Rake::RDocTask.new do |rdoc|
 end
 
 task :jasmine do
-  # system "cd vendor/jasmine && rake jasmine:build"
+  system "cd vendor/jasmine && rake jasmine:build"
   rm_rf "doc/jasmine"
   mkdir_p "doc/jasmine"
   cp_r "vendor/jasmine/doc/.", "doc/jasmine/."
