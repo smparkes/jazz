@@ -6,7 +6,7 @@ task :gemspec => :jasmine
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "smparkes.jazrb"
+    gem.name = "smparkes-jazrb"
     gem.summary = %Q{Env.js support for running Jasmine JS BDD specs}
     gem.description = %Q{Jazrb provides support for running specs based on the Jasmine JS BDD using the env.js JavaScript browser environment. Includes support for running under autotest via the autojaz command.}
     gem.email = "smparkes@smparkes.net"
