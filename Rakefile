@@ -12,7 +12,7 @@ begin
     gem.email = "smparkes@smparkes.net"
     gem.homepage = "http://github.com/smparkes/jazrb"
     gem.authors = ["Steven Parkes"]
-    gem.add_runtime_dependency "smparkes.envjs"
+    gem.add_runtime_dependency "smparkes-envjs"
     gem.add_development_dependency "ragaskar-jsdoc_helper"
     gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec}/**/*"]
   end
