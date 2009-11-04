@@ -9,5 +9,4 @@ else
   cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
 end
 
-puts cmd
 system cmd
