@@ -23,7 +23,8 @@ You can also execute an HTML spec via jazrb:
 
      jazrb spec/foo_spec.html
 
-The HTML fixture must load the necessary test files. Currently, only one fixture can be run per <tt>jazrb</tt> command.
+The HTML fixture must load the necessary test files. Any number of
+fixtures can be passed to the <tt>jazrb</tt> command.
 
 To run all the tests in the <tt>spec</tt> directory repeatedly, use <tt>autojaz</tt> as
 you would use <tt>autospec</tt>:
@@ -35,6 +36,12 @@ installed; <tt>jazrb</tt> can be used without ZenTest installed, but <tt>autojaz
 cannot be. autojaz does not (and currently cannot) load HTML fixtures.
 
 Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
+
+== Recent Changes
+
+1. Support multiple fixtures on the <tt>jazrb</tt> command. (Actually, this is entirely due to <tt>envjsrb</tt> supporting multiple fixtures. You need a recent build from github or an smparkes-envjs gem version of at least 0.0.5.)
+
+== Things to do
 
 == Copyright
 

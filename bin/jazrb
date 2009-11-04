@@ -4,8 +4,10 @@ INTRO = File.join(JAZ_DIR, "intro.js")
 OUTRO = File.join(JAZ_DIR, "outro.js")
 
 if ARGV.detect { |f| f =~  /\.x?html?$/ }
-  system "envjsrb #{ARGV.join(" ")}"
+  cmd = "envjsrb #{ARGV.join(" ")}"
 else
-  system "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
+  cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
 end
 
+puts cmd
+system cmd
