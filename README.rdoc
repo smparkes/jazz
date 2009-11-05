@@ -119,6 +119,7 @@ to true.
 
 1. Focus on failing tests until fixed, a la autotest.
 
+1. Extend to more frameworks, e.g., qunit. There's little here that's actually Jasmine-specific.
 
 == Copyright
 
