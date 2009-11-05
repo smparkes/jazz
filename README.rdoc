@@ -80,28 +80,30 @@ Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
 == Examples
 
-There are examples in <tt>examples/*</tt> and <tt>spec/examples/*</t>. You can run the
+There are examples in <tt>examples/*</tt> and <tt>spec/examples/*</tt>. You can run the
 tests with <tt>rake test</tt> which will run the watchr control file,
 <tt>jazrb.watchr</tt>. (Watchr as a runner will probably replace
 autojaz.)  You'll need the smparkes-watchr gem.
 
-Running <tt>jazrb.watchr</tt> (either with <tt>watchr
-jazrb.watchr</tt> or even <tt>./jazrb.watchr</tt> will run all the
-tests and then watch the file system for changes. If it sees a change,
+Running <tt>jazrb.watchr</tt> (either with <tt>watchr jazrb.watchr</tt>
+or as <tt>./jazrb.watchr</tt> will run all the
+tests and then watch the file system for changes. When it sees a change,
 it reruns the test. It knows how to find the HTML fixtures for specs
 where they exist in the right place, or it just runs the JavaScript
 spec itself. An example of the former is the pair
 <tt>example/hello_world.html</tt> and
-<tt>spec/example/hello_world_spec.js</tt>. And example of the latter
+<tt>spec/example/hello_world_spec.js</tt>: jazrb will reload the HTML if either file is changed.
+An example of the latter
 is <tt>spec/example/plain_spec.js</tt>.
 
 You can also load the individual HTML files in the browser to run the
 tests there. For example, on a Mac, <tt>open
 example/hello_world.html</tt>. (The idea is that for production, the
 spec helper files are changed to not load the tests: that should be
-the only change necessary.)  Note that to run the tests from files in
-Firefox, you'll need to set the
-<tt>security.fileuri.strict_origin_policy</tt> option to true.
+the only change necessary. Or the <tt><script></tt> tag could be
+ripped out.)  Note that to run the tests from the filesystem in Firefox, you'll
+need to set the <tt>security.fileuri.strict_origin_policy</tt> option
+to true.
 
 == Recent Changes
 
@@ -114,6 +116,9 @@ Firefox, you'll need to set the
 == Things to do
 
 1. Complete and test support for loading against an HTTP server.
+
+1. Focus on failing tests until fixed, a la autotest.
+
 
 == Copyright
 
