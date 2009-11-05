@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+
+$VERBOSE = true
+
+require 'jazrb/options'
+
 ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
 INTRO = File.join(JAZ_DIR, "intro.js")
 OUTRO = File.join(JAZ_DIR, "outro.js")
@@ -8,7 +13,7 @@ args = [ "envjsrb", INTRO ];
 introd = true
 outrod = true
 
-ARGV.each do |f|
+$jazrb_args.each do |f|
 
   if f =~  /\.x?html?$/ || f =~ %r(^https?://)
     if introd && !outrod
@@ -36,18 +41,128 @@ ARGV.each do |f|
 
 end
 
-if ARGV.detect { |f| f =~  /\.x?html?$/ }
-  cmd = "envjsrb #{ARGV.join(" ")}"
-else
-  cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
-end
-cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
-
-if introd && !outrod
-  args << OUTRO
-end
+args << OUTRO
 
 cmd = args.join(" ")
 
-# puts cmd
-system cmd
+puts cmd if $jazrb_verbose 
+
+require 'eventmachine'
+require 'nokogiri'
+
+class Restart < Exception; end
+
+def colour(text, colour_code)
+  # return text unless ENV['RSPEC_COLOR'] || (colour? & (autospec? || output_to_tty?))
+  "#{colour_code}#{text}\e[0m"
+end
+
+def green(text); colour(text, "\e[32m"); end
+def red(text); colour(text, "\e[31m"); end
+def yellow(text); colour(text, "\e[33m"); end
+def blue(text); colour(text, "\e[34m"); end
+
+$spec_info = {}
+$spec_info[:specs] = []
+$spec_info[:failures] = []
+$spec_info[:pending] = []
+
+class SAX < Nokogiri::XML::SAX::Document
+
+  def start_element name, attrs
+    # p attrs
+    attrs = Hash[*attrs]
+    # p attrs
+    case name
+    when "testsuites";
+    when "testsuite";
+      @testsuite_name = attrs["name"]
+    when "testcase";
+      $spec_info[:specs] << (tc = {})
+      tc[:name] = @testsuite_name
+      @testcase_failed = false
+    when "failure";
+      $spec_info[:failures] << (tc = $spec_info[:specs].last)
+      tc[:message] = attrs["message"]
+      @testcase_failed = true
+    else; raise "hell: #{name}"
+    end
+  end
+
+  def cdata_block string
+    if @testcase_failed
+      $spec_info[:failures].last[:stack] = string
+    end
+  end
+
+  def end_element name
+    case name
+    when "testsuites";
+      raise Restart
+    when "testsuite";
+    when "testcase";
+      if !$jazrb_xml
+        char = nil
+        if @testcase_failed
+          char = red("F")
+        else
+          char = green(".")
+        end
+        print char
+        $stdout.flush
+      end
+    when "failure";
+    else; raise "hell: #{name}"
+    end
+  end
+end
+
+module WriteToNokogiri
+  def post_init
+    @parser = Nokogiri::XML::SAX::PushParser.new( SAX.new )
+  end
+  def receive_data data
+    begin
+      if $jazrb_xml
+        puts data
+        $stdout.flush
+      end
+      @parser << data
+    rescue Restart
+      @parser = Nokogiri::XML::SAX::PushParser.new( SAX.new )
+    rescue Exception => e
+      $stderr.puts "Parser raised #{e} on #{data}"
+      exit 1
+    end
+  end
+  def unbind
+    EM.stop
+  end
+end
+
+date = Time.now
+EM.run do
+  EM.popen cmd, WriteToNokogiri
+end
+puts
+puts
+if !$jazrb_xml
+  $spec_info[:failures].each_with_index do |failure,i|
+    print i+1,")\n"
+    print red("#{failure[:name]} FAILED\n")
+    print red(failure[:message]),"\n"
+    print failure[:stack],"\n"
+  end
+  puts "Finished in #{Time.now - date} seconds"
+  puts
+  msg = "#{$spec_info[:specs].length} examples, #{$spec_info[:failures].length} failures, #{$spec_info[:pending].length} pending"
+  if $spec_info[:failures].length > 0
+    msg = red(msg)
+  elsif $spec_info[:pending].length > 0
+    msg = yellow(msg)
+  else
+    msg = green(msg)
+  end
+  puts msg
+end
+exit $spec_info[:failures].length > 0 ? 1 : 0
