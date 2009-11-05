@@ -3,10 +3,51 @@ ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE_
 INTRO = File.join(JAZ_DIR, "intro.js")
 OUTRO = File.join(JAZ_DIR, "outro.js")
 
+args = [ "envjsrb", INTRO ];
+
+introd = true
+outrod = true
+
+ARGV.each do |f|
+
+  if f =~  /\.x?html?$/ || f =~ %r(^https?://)
+    if introd && !outrod
+      args << OUTRO
+      args << "about:blank"
+      outrod = true
+      introd = false
+    end
+    if !introd
+      args << INTRO
+    end
+    args << f
+    introd = true
+    outrod = false
+  elsif f == "about:blank"
+    if introd && !outrod
+      args << OUTRO
+      outrod = true
+      introd = false
+    end
+    args << f
+  else
+    args << f
+  end
+
+end
+
 if ARGV.detect { |f| f =~  /\.x?html?$/ }
   cmd = "envjsrb #{ARGV.join(" ")}"
 else
   cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
 end
+cmd = "envjsrb #{INTRO} #{ARGV.join(" ")} #{OUTRO}"
 
+if introd && !outrod
+  args << OUTRO
+end
+
+cmd = args.join(" ")
+
+# puts cmd
 system cmd
