@@ -1,15 +1,21 @@
 = jazrb
 
 Jazrb provides support for running JavaScript specs written using the
-Jasmine JavaScript BDD framework under <tt>env.js</tt>. It includes
-support for running via autotest using the <tt>autojaz</tt>
-command.
+Jasmine JavaScript BDD framework under env.js. It includes support for
+running via watchr and autotest.
 
 == Install
 
 You can install the gem via <tt>gem install smparkes-jazrb</tt>. If
 you want install from github (http://github.com/smparkes/jazrb),
-you'll need to checkout the Jasmine submodule (<tt>git submodule update --init</tt>) and also need to make sure you have the prerequisites listed in the gemspec in the Rakefile.
+you'll need to checkout the Jasmine submodule (<tt>git submodule
+update --init</tt>) and also need to make sure you have the
+prerequisites listed in the gemspec in the Rakefile. <tt>rake
+gemspec</tt> will build and copy the necessary parts of Jasmine.
+
+If you want to run the examples/tests, you'll need jQuery. The <tt>git
+submould update --init</tt> command will have brought in jQuery, but
+you'll need to build it: <tt>cd vendor/jquery && make</tt>.
 
 == Use
 
@@ -19,25 +25,55 @@ rspec <tt>spec</tt> command, e.g.,
 
      jazrb spec/foo_spec.js spec/bar_spec.js
 
-You can also execute an HTML spec via jazrb:
+You can also execute HTML specs via jazrb:
 
      jazrb spec/foo_spec.html
+
+or even normal pages, that have the proper hooks to run as examples
+(see below).
+
+HTML files must be valid XML, i.e., XHTML, at this time.
 
 The HTML fixture must load the necessary test files. Any number of
 fixtures can be passed to the <tt>jazrb</tt> command.
 
-To run all the tests in the <tt>spec</tt> directory repeatedly, use <tt>autojaz</tt> as
+jazrb uses env.js to run the tests, feeding it your HTML and
+Javascript, plus the necessary JavaScript and pages to make the tests
+run correctly. You can see the entire <tt>envjsrb</tt> command by
+passing <tt>jazrb</tt> the <tt>-v</tt> flag.
+
+The Jasmine tests are configured to report results in streaming XML
+(JUnit format, more or less), which <tt>jazrb</tt> turns into the
+familar rspec-like results. The <tt>jazrb</tt> <tt>--xml</tt> flag
+causes <tt>jazrb</tt> to display the raw XML output.
+
+To run all the tests in the <tt>spec</tt> directory repeatedly you can
+use <tt>watchr</tt>. See the <tt>jazrb.watchr</tt> file and the
+discussion on exmaples below.
+
+You can alos try using <tt>autojaz</tt> as
 you would use <tt>autospec</tt>:
 
    autojaz
 
-You'll need to install the ZenTest gem if you don't have it
-installed; <tt>jazrb</tt> can be used without ZenTest installed, but <tt>autojaz</tt>
-cannot be. autojaz does not (and currently cannot) load HTML fixtures.
+You'll need to install the ZenTest gem if you don't have it installed;
+<tt>jazrb</tt> can be used without ZenTest installed, but
+<tt>autojaz</tt> cannot be. autojaz is probably going to be
+deprecated.
 
 Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
+== Examples
+
+There are examples in examples/* and spec/examples. You can run the tests with "rake test" which will run the watchr control file, <tt>jazrb.watchr</tt>. (Watchr as a runner will probably replace autojaz.)  You'll need the smparkes-watchr gem.
+
+Running <tt>jazrb.watchr</tt> (either with <tt>watchr jazrb.watchr</tt> or even <tt>./jazrb.watchr</tt> will run all the tests and then watch the file system for changes. If it sees a change, it reruns the test. It knows how to find the HTML fixtures for specs where they exist in the right place, or it just runs the JavaScript spec itself. An example of the former is the pair <tt>example/hello_world.html</tt> and <tt>spec/example/hello_world_spec.js</tt>. And example of the latter is <tt>spec/example/plain_spec.js</tt>.
+
 == Recent Changes
+
+1. Add watchr support
+
+1. Add example
 
 1. Support multiple fixtures on the <tt>jazrb</tt> command. (Actually, this is entirely due to <tt>envjsrb</tt> supporting multiple fixtures. You need a recent build from github or an smparkes-envjs gem version of at least 0.0.5.)
 
