@@ -91,7 +91,8 @@ class SAX < Nokogiri::XML::SAX::Document
 
   def cdata_block string
     if @testcase_failed
-      $spec_info[:failures].last[:stack] = string
+      $spec_info[:failures].last[:stack] ||= ""
+      $spec_info[:failures].last[:stack] << string
     end
   end
 
