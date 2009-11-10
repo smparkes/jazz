@@ -72,14 +72,23 @@
   var load_first = function( fn, endings ) {
     for (var i=0; i<endings.length; i++) {
       var filename = fn + endings[i] + ".js";
-      var contents = load_file( filename );
-      if ( contents ) {
-        try {
-          eval(contents);
-        } catch(e) {
-          print("could not eval spec: ",e);
-        }
+      if ( window.Envjs ) {
+        var root = window.location.toString();
+        var slash = root.lastIndexOf("/");
+        root = root.slice(0,slash+1);
+        root = root.replace(/^file:\/\//,"");
+        window.load(root + filename);
         return;
+      } else {
+        var contents = load_file( filename );
+        if ( contents ) {
+          try {
+            eval(contents);
+          } catch(e) {
+            print("could not eval spec: ",e);
+          }
+          return;
+        }
       }
     }
   };

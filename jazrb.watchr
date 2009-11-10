@@ -1,6 +1,8 @@
 #!/usr/bin/env watchr
 
 begin; require 'watchr/event_handlers/em'; rescue LoadError; end
+begin; require 'watchr/deps'; rescue LoadError; end
+
 
 watch( %r(.*), :modified, lambda { |md| File.directory? md[0] } ) do |md|
   raise Watchr::Refresh
@@ -54,7 +56,10 @@ jazrb = lambda do |*args|
     end
   end
   if !files.empty?
-    cmd = "jazrb #{files.join(" ")}"
+    deps = nil
+    begin deps = "--deps #{db_path}"
+    rescue; end
+    cmd = "jazrb #{deps} #{files.join(" ")}"
     puts cmd
     system cmd
     puts "exit status: #{$?.exitstatus}" if $?.exited? && $?.exitstatus != 0

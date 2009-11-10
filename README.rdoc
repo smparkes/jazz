@@ -107,6 +107,8 @@ to true.
 
 == Recent Changes
 
+1. Pass dependence flag to envjsrb to support watchr dependences
+
 1. Add watchr support
 
 1. Add example
@@ -120,6 +122,8 @@ to true.
 1. Focus on failing tests until fixed, a la autotest.
 
 1. Extend to more frameworks, e.g., qunit. There's little here that's actually Jasmine-specific.
+
+1. Including a missing script should be an error
 
 == Copyright
 

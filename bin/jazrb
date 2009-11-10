@@ -8,12 +8,16 @@ ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE_
 INTRO = File.join(JAZ_DIR, "intro.js")
 OUTRO = File.join(JAZ_DIR, "outro.js")
 
-args = [ "envjsrb", INTRO ];
+args = [ "envjsrb" ]
+if $jazrb_deps
+  args += [ "--deps", $jazrb_deps ]
+end
+args << INTRO
 
 introd = true
 outrod = true
 
-$jazrb_args.each do |f|
+ARGV.each do |f|
 
   if f =~  /\.x?html?$/ || f =~ %r(^https?://)
     if introd && !outrod

@@ -2,8 +2,9 @@ require 'optparse'
 
 $jazrb_verbose = false
 $jazrb_xml = false
+$jazrb_deps = nil
 
-parser = OptionParser.new do |o|
+OptionParser.new do |o|
 
   o.on("-v","--verbose") do 
     $jazrb_verbose = true
@@ -13,6 +14,8 @@ parser = OptionParser.new do |o|
     $jazrb_xml = true
   end
 
-end
+  o.on("--deps PATH") do |path|
+    $jazrb_deps = path
+  end
 
-$jazrb_args = parser.parse ARGV
+end.parse!

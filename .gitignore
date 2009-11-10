@@ -7,3 +7,4 @@ pkg
 /lib/jazrb/jasmine
 /*jazrb-*.gem
 /*jazrb.gemspec
+.*.watchr.deps
