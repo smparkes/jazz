@@ -122,6 +122,8 @@ class SAX < Nokogiri::XML::SAX::Document
   end
 end
 
+$failed_processes = 0
+
 module WriteToNokogiri
   def post_init
     @parser = Nokogiri::XML::SAX::PushParser.new( SAX.new )
@@ -141,11 +143,16 @@ module WriteToNokogiri
     end
   end
   def unbind
+    $failed_processes += 1  if get_status.exitstatus > 0
     EM.stop
   end
 end
 
 date = Time.now
+failures = nil
+examples = nil
+pending = nil
+
 EM.run do
   EM.popen cmd, WriteToNokogiri
 end
@@ -160,14 +167,21 @@ if !$jazrb_xml
   end
   puts "Finished in #{Time.now - date} seconds"
   puts
-  msg = "#{$spec_info[:specs].length} examples, #{$spec_info[:failures].length} failures, #{$spec_info[:pending].length} pending"
-  if $spec_info[:failures].length > 0
+  examples = $spec_info[:specs].length
+  failures = $spec_info[:failures].length
+  pending = $spec_info[:pending].length
+  if $failed_processes > 0
+    examples += $failed_processes 
+    failures += $failed_processes 
+  end
+  msg = "#{examples} examples, #{failures} failures, #{pending} pending"
+  if failures > 0
     msg = red(msg)
-  elsif $spec_info[:pending].length > 0
+  elsif pending > 0
     msg = yellow(msg)
   else
     msg = green(msg)
   end
   puts msg
 end
-exit $spec_info[:failures].length > 0 ? 1 : 0
+exit ( failures > 0 ) ? 1 : 0
