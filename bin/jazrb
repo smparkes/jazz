@@ -163,7 +163,17 @@ if !$jazrb_xml
     print i+1,")\n"
     print red("#{failure[:name]} FAILED\n")
     print red(failure[:message]),"\n"
-    print failure[:stack],"\n"
+    # double check, but is there really anything in the jaz stack that's useful?
+    stack = failure[:stack]
+    stack = stack.split "\n"
+    stack.each do |line|
+      if line =~ %r(/jasmine.js:\d+)
+        break
+      end
+      print line, "\n"
+    end
+    # p stack
+    # print failure[:stack],"\n"
   end
   puts "Finished in #{Time.now - date} seconds"
   puts
