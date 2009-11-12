@@ -125,6 +125,8 @@ to true.
 
 1. Including a missing script should be an error
 
+1. Make work in interactive mode (requires intro/outro/out:blank intergration with envjsrb)
+
 == Copyright
 
 Copyright (c) 2009 Steven Parkes. See LICENSE for details.
