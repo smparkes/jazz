@@ -4,15 +4,22 @@ $VERBOSE = true
 
 require 'jazrb/options'
 
-ENV["JAZRB_JS_PATH"] = JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
-INTRO = File.join(JAZ_DIR, "intro.js")
-OUTRO = File.join(JAZ_DIR, "outro.js")
+ENV["JAZRB_JS_PATH"] =
+  JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
+
+intro = File.join(JAZ_DIR, "intro.js")
+outro = File.join(JAZ_DIR, "outro.js")
+
+if $jazrb_qunit
+  intro = File.join(JAZ_DIR, "qintro.js")
+  outro = File.join(JAZ_DIR, "qoutro.js")
+end
 
 args = [ "envjsrb" ]
 if $jazrb_deps
   args += [ "--deps", $jazrb_deps ]
 end
-args << INTRO
+args << intro
 
 introd = true
 outrod = true
@@ -21,20 +28,20 @@ ARGV.each do |f|
 
   if f =~  /\.x?html?$/ || f =~ %r(^https?://)
     if introd && !outrod
-      args << OUTRO
+      args << outro
       args << "about:blank"
       outrod = true
       introd = false
     end
     if !introd
-      args << INTRO
+      args << intro
     end
     args << f
     introd = true
     outrod = false
   elsif f == "about:blank"
     if introd && !outrod
-      args << OUTRO
+      args << outro
       outrod = true
       introd = false
     end
@@ -45,7 +52,7 @@ ARGV.each do |f|
 
 end
 
-args << OUTRO
+args << outro
 
 cmd = args.join(" ")
 
@@ -83,7 +90,7 @@ class SAX < Nokogiri::XML::SAX::Document
       @testsuite_name = attrs["name"]
     when "testcase";
       $spec_info[:specs] << (tc = {})
-      tc[:name] = @testsuite_name
+      tc[:name] = @testsuite_name + " : " + attrs["name"]
       @testcase_failed = false
     when "failure";
       $spec_info[:failures] << (tc = $spec_info[:specs].last)
@@ -143,7 +150,8 @@ module WriteToNokogiri
     end
   end
   def unbind
-    $failed_processes += 1  if get_status.exitstatus > 0
+    $failed_processes += 1  if get_status.exitstatus &&
+                               get_status.exitstatus  > 0
     EM.stop
   end
 end
@@ -165,9 +173,9 @@ if !$jazrb_xml
     print red(failure[:message]),"\n"
     # double check, but is there really anything in the jaz stack that's useful?
     stack = failure[:stack]
-    stack = stack.split "\n"
-    stack.each do |line|
-      if line =~ %r(/jasmine.js:\d+)
+    stack and ( stack = stack.split "\n" )
+    stack and stack.each do |line|
+      if line =~ %r(/jasmine.js:\d+) || line =~ %r(/jasmine/src/.*\.js:\d+)
         break
       end
       print line, "\n"
@@ -194,4 +202,4 @@ if !$jazrb_xml
   end
   puts msg
 end
-exit ( failures > 0 ) ? 1 : 0
+exit ( !failures.nil? && failures > 0 ) ? 1 : 0

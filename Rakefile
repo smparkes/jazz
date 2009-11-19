@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rake'
 
 task :gemspec => :jasmine
+task :gemspec => :qunit
 
 begin
   require 'jeweler'
@@ -42,6 +43,12 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "jazrb #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+task :qunit do
+  rm_rf "lib/jazrb/qunit"
+  mkdir_p "lib/jazrb/qunit"
+  cp_r "vendor/qunit/qunit/.", "lib/jazrb/qunit/."
 end
 
 task :jasmine do
