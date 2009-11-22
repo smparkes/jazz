@@ -4,6 +4,8 @@ Jazrb provides support for running JavaScript specs written using the
 Jasmine JavaScript BDD framework under env.js. It includes support for
 running via watchr and autotest.
 
+Discussion at http://groups.google.com/group/jazrb.
+
 == Install
 
 You can install the gem via <tt>gem install smparkes-jazrb</tt>.  If
