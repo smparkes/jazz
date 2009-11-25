@@ -88,6 +88,10 @@ class SAX < Nokogiri::XML::SAX::Document
     when "testsuites";
     when "testsuite";
       @testsuite_name = attrs["name"]
+      if @testcase_pending = ( attrs["skipped"] == "true" )
+        $spec_info[:specs] << (tc = {})
+        $spec_info[:pending] << $spec_info[:specs].last
+      end
     when "testcase";
       $spec_info[:specs] << (tc = {})
       tc[:name] = @testsuite_name + " : " + attrs["name"]
@@ -117,6 +121,8 @@ class SAX < Nokogiri::XML::SAX::Document
         char = nil
         if @testcase_failed
           char = red("F")
+        elsif @testcase_pending
+          char = yellow("*")
         else
           char = green(".")
         end
