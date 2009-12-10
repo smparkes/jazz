@@ -88,8 +88,9 @@ class SAX < Nokogiri::XML::SAX::Document
     when "testsuites";
     when "testsuite";
       @testsuite_name = attrs["name"]
-      if @testcase_pending = ( attrs["skipped"] == "true" )
+      if @testsuite_pending = ( attrs["skipped"] == "true" )
         $spec_info[:specs] << (tc = {})
+        tc[:name] = @testsuite_name
         $spec_info[:pending] << $spec_info[:specs].last
       end
     when "testcase";
@@ -116,13 +117,16 @@ class SAX < Nokogiri::XML::SAX::Document
     when "testsuites";
       raise Restart
     when "testsuite";
+      if @testsuite_pending
+        char = yellow("*")
+        print char
+        $stdout.flush
+      end
     when "testcase";
       if !$jazrb_xml
         char = nil
         if @testcase_failed
           char = red("F")
-        elsif @testcase_pending
-          char = yellow("*")
         else
           char = green(".")
         end
@@ -173,6 +177,14 @@ end
 puts
 puts
 if !$jazrb_xml
+  if $spec_info[:pending].length > 0
+    puts "Pending:"
+    $spec_info[:pending].each do |pending|
+      puts
+      puts yellow(pending[:name])
+    end
+    puts "\n"
+  end
   $spec_info[:failures].each_with_index do |failure,i|
     print i+1,")\n"
     print red("#{failure[:name]} FAILED\n")

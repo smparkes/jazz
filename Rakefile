@@ -14,6 +14,8 @@ begin
     gem.homepage = "http://github.com/smparkes/jazrb"
     gem.authors = ["Steven Parkes"]
     gem.add_runtime_dependency "smparkes-envjs"
+    gem.add_runtime_dependency "smparkes-eventmachine"
+    gem.add_runtime_dependency "nokogiri"
     gem.add_development_dependency "ragaskar-jsdoc_helper"
     gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec}/**/*"]
   end
