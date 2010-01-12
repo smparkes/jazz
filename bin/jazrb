@@ -117,10 +117,12 @@ class SAX < Nokogiri::XML::SAX::Document
     when "testsuites";
       raise Restart
     when "testsuite";
-      if @testsuite_pending
-        char = yellow("*")
-        print char
-        $stdout.flush
+      if !$jazrb_xml
+        if @testsuite_pending
+          char = yellow("*")
+          print char
+          $stdout.flush
+        end
       end
     when "testcase";
       if !$jazrb_xml
@@ -148,6 +150,7 @@ module WriteToNokogiri
   def receive_data data
     begin
       if $jazrb_xml
+        # $stderr.print data
         puts data
         $stdout.flush
       end
@@ -174,8 +177,10 @@ pending = nil
 EM.run do
   EM.popen cmd, WriteToNokogiri
 end
+
 puts
 puts
+
 if !$jazrb_xml
   if $spec_info[:pending].length > 0
     puts "Pending:"
@@ -204,6 +209,8 @@ if !$jazrb_xml
   puts "Finished in #{Time.now - date} seconds"
   puts
   examples = $spec_info[:specs].length
+  # require 'pp'
+  # pp $spec_info[:specs]
   failures = $spec_info[:failures].length
   pending = $spec_info[:pending].length
   if $failed_processes > 0
