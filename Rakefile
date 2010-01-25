@@ -7,17 +7,18 @@ task :gemspec => :qunit
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "smparkes-jazrb"
+    gem.name = "jazrb"
     gem.summary = %Q{Env.js support for running Jasmine JS BDD specs}
     gem.description = %Q{Jazrb provides support for running specs based on the Jasmine JS BDD using the env.js JavaScript browser environment. Includes support for running under autotest via the autojaz command.}
     gem.email = "smparkes@smparkes.net"
     gem.homepage = "http://github.com/smparkes/jazrb"
     gem.authors = ["Steven Parkes"]
-    gem.add_runtime_dependency "smparkes-envjs"
+    gem.add_runtime_dependency "envjs", ">= 0.1.0"
     gem.add_runtime_dependency "smparkes-eventmachine"
     gem.add_runtime_dependency "nokogiri"
     gem.add_development_dependency "ragaskar-jsdoc_helper"
-    gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec}/**/*"]
+    # temporarily add vendor/jasmine ...
+    gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec,vendor/jasmine}/**/*"]
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
@@ -40,7 +41,6 @@ Rake::RDocTask.new do |rdoc|
   else
     version = ""
   end
-
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "jazrb #{version}"
   rdoc.rdoc_files.include('README*')
