@@ -25,7 +25,7 @@ rescue LoadError
 end
 
 task :test do
-  cmd = "watchr jazrb.watchr --once"
+  cmd = "wake --once"
   # puts cmd
   system cmd
 end

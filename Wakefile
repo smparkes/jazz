@@ -1,15 +1,12 @@
-#!/usr/bin/env watchr
-
-begin; require 'watchr/event_handlers/em'; rescue LoadError; end
-begin; require 'watchr/deps'; rescue LoadError; end
-
+begin; require 'wake/event_handlers/em'; rescue LoadError; end
+begin; require 'wake/deps'; rescue LoadError; end
 
 watch( %r(.*), :modified, lambda { |md| File.directory? md[0] } ) do |md|
-  raise Watchr::Refresh
+  raise Wake::Refresh
 end
 
-watch( %r(jazrb.watchr), :modified ) do |md|
-  raise Watchr::Refresh
+watch( %r(jazrb.wake), :modified ) do |md|
+  raise Wake::Refresh
 end
 
 watch( %r(^((public|spec)/.*)\.haml$), [ :created, :modified ] ) do |md|

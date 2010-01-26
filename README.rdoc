@@ -2,7 +2,7 @@
 
 Jazrb provides support for running JavaScript specs written using the
 Jasmine JavaScript BDD framework under env.js. It includes support for
-running via watchr and autotest.
+running via wake.
 
 Discussion at http://groups.google.com/group/jazrb.
 
@@ -53,19 +53,15 @@ familiar rspec format. The <tt>--xml</tt> flag
 causes <tt>jazrb</tt> to display the raw XML output.
 
 To run all the tests in the <tt>spec</tt> directory repeatedly you can
-use watchr:
+use wake:
 
   rake test
 
 or
 
-  watchr jazrb.watchr
+  wake
 
-or even
-
-  ./jazrb.watchr
-
-See jazrb's own <tt>jazrb.watchr</tt> file and the
+See jazrb's <tt>Wakefile</tt> file and the
 discussion on examples below.
 
 You can also try using <tt>autojaz</tt> as
@@ -76,19 +72,18 @@ you would use <tt>autospec</tt>:
 You'll need to install the ZenTest gem if you don't have it installed;
 <tt>jazrb</tt> can be used without ZenTest installed, but
 <tt>autojaz</tt> cannot be. Note that <tt>autojaz</tt> may be
-deprecated in favor of <tt>watchr</tt>.
+deprecated in favor of <tt>wake</tt>.
 
 Screen shot at http://www.scrnshots.com/users/smparkes/screenshots/206033
 
 == Examples
 
 There are examples in <tt>examples/*</tt> and <tt>spec/examples/*</tt>. You can run the
-tests with <tt>rake test</tt> which will run the watchr control file,
-<tt>jazrb.watchr</tt>. (Watchr as a runner will probably replace
-autojaz.)  You'll need the smparkes-watchr gem.
+tests with <tt>rake test</tt> which will run wake against the Wakefile.
+(Wake as a runner will probably replace
+autojaz.)  You'll need the wake gem.
 
-Running <tt>jazrb.watchr</tt> (either with <tt>watchr jazrb.watchr</tt>
-or as <tt>./jazrb.watchr</tt> will run all the
+Running wake will run all the
 tests and then watch the file system for changes. When it sees a change,
 it reruns the test. It knows how to find the HTML fixtures for specs
 where they exist in the right place, or it just runs the JavaScript
@@ -109,9 +104,9 @@ to true.
 
 == Recent Changes
 
-1. Pass dependence flag to envjsrb to support watchr dependences
+1. Pass dependence flag to envjsrb to support wake dependences
 
-1. Add watchr support
+1. Add wake support
 
 1. Add example
 
