@@ -7,3 +7,6 @@
 [submodule "vendor/qunit"]
 	path = vendor/qunit
 	url = git://github.com/jquery/qunit.git
+[submodule "vendor/json2"]
+	path = vendor/json2
+	url = git@github.com:smparkes/json2.git

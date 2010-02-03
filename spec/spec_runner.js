@@ -1,10 +1,12 @@
+/*jslint evil: true*/
+"use strict";
 (function($){
 
   var print = ( this.Envjs && this.print ) || ( this.console && this.console.debug ) || function(){};
 
   var construct_path = function( source, result ) {
     var levels = 0;
-    while( source.slice( source.length - 3 ) == "/.." ) {
+    while( source.slice( source.length - 3 ) === "/.." ) {
       levels++;
       source = source.slice( 0, source.length - 3 );
     }
@@ -22,7 +24,7 @@
 
   var spec_filename = function() {
     var window = this;
-    path = window.location.toString();
+    var path = window.location.toString();
     var q = path.lastIndexOf("?");
     if ( q >= 0 ) {
       path = path.slice(0,q);
@@ -53,12 +55,12 @@
   };
 
   var load_file = function(filename) {
-    var contents = undefined;
+    var contents;
     $.ajax({ url: filename,
              dataType: "text",
              async: false,
              error: function( xhr ) {
-               if(xhr.status != 404) {
+               if (xhr.status+"" !== "404") {
                  throw "error on load_file xhr for " + filename + ": " + xhr.status;
                }
              },
@@ -118,7 +120,7 @@
   run_specs();
 
   if(this.jasmine && !this.Envjs) {
-    var embedded = window.location != "about:blank";
+    var embedded = window.location+"" !== "about:blank";
 
     var jasmineEnv = jasmine.getEnv();
     jasmineEnv.updateInterval = 1000;
@@ -140,4 +142,4 @@
     });
   }
 
-})(jQuery);
+}(jQuery));
