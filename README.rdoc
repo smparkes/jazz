@@ -4,7 +4,7 @@ Jazrb provides support for running JavaScript specs written using the
 Jasmine JavaScript BDD framework under env.js. It includes support for
 running via wake.
 
-Discussion at http://groups.google.com/group/jazrb.
+Discussion at http://groups.google.com/group/jazrb or #jazrb at freenode.
 
 == Install
 
