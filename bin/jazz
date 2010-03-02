@@ -2,22 +2,22 @@
 
 $VERBOSE = true
 
-require 'jazrb/options'
+require 'jazz/options'
 
-ENV["JAZRB_JS_PATH"] =
-  JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
+ENV["JAZZ_JS_PATH"] =
+  JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazz'))
 
 intro = File.join(JAZ_DIR, "intro.js")
 outro = File.join(JAZ_DIR, "outro.js")
 
-if $jazrb_qunit
+if $jazz_qunit
   intro = File.join(JAZ_DIR, "qintro.js")
   outro = File.join(JAZ_DIR, "qoutro.js")
 end
 
 args = [ "envjsrb" ]
-if $jazrb_deps
-  args += [ "--deps", $jazrb_deps ]
+if $jazz_deps
+  args += [ "--deps", $jazz_deps ]
 end
 args << intro
 
@@ -56,7 +56,7 @@ args << outro
 
 cmd = args.join(" ")
 
-puts cmd if $jazrb_verbose 
+puts cmd if $jazz_verbose 
 
 require 'eventmachine'
 require 'nokogiri'
@@ -117,7 +117,7 @@ class SAX < Nokogiri::XML::SAX::Document
     when "testsuites";
       raise Restart
     when "testsuite";
-      if !$jazrb_xml
+      if !$jazz_xml
         if @testsuite_pending
           char = yellow("*")
           print char
@@ -125,7 +125,7 @@ class SAX < Nokogiri::XML::SAX::Document
         end
       end
     when "testcase";
-      if !$jazrb_xml
+      if !$jazz_xml
         char = nil
         if @testcase_failed
           char = red("F")
@@ -149,7 +149,7 @@ module WriteToNokogiri
   end
   def receive_data data
     begin
-      if $jazrb_xml
+      if $jazz_xml
         # $stderr.print data
         puts data
         $stdout.flush
@@ -181,7 +181,7 @@ end
 puts
 puts
 
-if !$jazrb_xml
+if !$jazz_xml
   if $spec_info[:pending].length > 0
     puts "Pending:"
     $spec_info[:pending].each do |pending|

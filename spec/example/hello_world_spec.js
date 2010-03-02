@@ -1,4 +1,4 @@
-jasmine.include(jazrb_root + "/spec/example/spec_helper.js");
+jasmine.include(jazz_root + "/spec/example/spec_helper.js");
 
 (function($){
 

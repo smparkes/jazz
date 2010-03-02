@@ -48,7 +48,7 @@
     }
     var filename = path.slice(slash+1);
     path = path.slice(0,slash);
-    path = construct_path( path + "/" + jazrb_root, jazrb_root + "/spec/" );
+    path = construct_path( path + "/" + jazz_root, jazz_root + "/spec/" );
     return [ path, spec_filename() ];
   };
 
@@ -106,7 +106,7 @@
   };
 
   var run_specs = function(){
-    if(!this.jazrb_root) {
+    if(!this.jazz_root) {
       return;
     }
     var specs = find_specs();

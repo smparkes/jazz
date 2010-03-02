@@ -1,2 +1,2 @@
-jazrb_root = this.jazrb_root || "..";
-document.write("<script type='text/javascript' src='" + jazrb_root + "/spec/spec_helper.js'></script>");
+jazz_root = this.jazz_root || "..";
+document.write("<script type='text/javascript' src='" + jazz_root + "/spec/spec_helper.js'></script>");

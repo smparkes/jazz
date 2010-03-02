@@ -1,4 +1,4 @@
-jasmine.include(jazrb_root + "/spec/example/nested/SpecHelper.js");
+jasmine.include(jazz_root + "/spec/example/nested/SpecHelper.js");
 
 (function($){
 

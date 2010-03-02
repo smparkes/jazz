@@ -7,13 +7,13 @@ task :gemspec => :qunit
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "jazrb"
-    gem.summary = %Q{Env.js support for running Jasmine JS BDD specs}
-    gem.description = %Q{Jazrb provides support for running specs based on the Jasmine JS BDD using the env.js JavaScript browser environment. Includes support for running under autotest via the autojaz command.}
+    gem.name = "jazz"
+    gem.summary = %Q{Env.js support for running JS tests and specs}
+    gem.description = %Q{Jazz provides support for running specs based on frameworks like Jasmine using the env.js JavaScript browser environment.}
     gem.email = "smparkes@smparkes.net"
-    gem.homepage = "http://github.com/smparkes/jazrb"
+    gem.homepage = "http://github.com/smparkes/jazz"
     gem.authors = ["Steven Parkes"]
-    gem.add_runtime_dependency "envjs", ">= 0.1.0"
+    gem.add_runtime_dependency "envjs", ">= 0.1.7"
     gem.add_runtime_dependency "smparkes-eventmachine"
     gem.add_runtime_dependency "nokogiri"
     gem.add_development_dependency "ragaskar-jsdoc_helper"
@@ -42,15 +42,15 @@ Rake::RDocTask.new do |rdoc|
     version = ""
   end
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "jazrb #{version}"
+  rdoc.title = "jazz #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
 task :qunit do
-  rm_rf "lib/jazrb/qunit"
-  mkdir_p "lib/jazrb/qunit"
-  cp_r "vendor/qunit/qunit/.", "lib/jazrb/qunit/."
+  rm_rf "lib/jazz/qunit"
+  mkdir_p "lib/jazz/qunit"
+  cp_r "vendor/qunit/qunit/.", "lib/jazz/qunit/."
 end
 
 task :jasmine do
@@ -58,10 +58,10 @@ task :jasmine do
   rm_rf "doc/jasmine"
   mkdir_p "doc/jasmine"
   cp_r "vendor/jasmine/doc/.", "doc/jasmine/."
-  rm_rf "lib/jazrb/jasmine"
-  mkdir_p "lib/jazrb/jasmine"
-  cp Dir["vendor/jasmine/lib/jasmine-*.js"][0], "lib/jazrb/jasmine/jasmine.js"
-  cp Dir["vendor/jasmine/lib/*.js"], "lib/jazrb/jasmine"
+  rm_rf "lib/jazz/jasmine"
+  mkdir_p "lib/jazz/jasmine"
+  cp Dir["vendor/jasmine/lib/jasmine-*.js"][0], "lib/jazz/jasmine/jasmine.js"
+  cp Dir["vendor/jasmine/lib/*.js"], "lib/jazz/jasmine"
 end
 
 # Local Variables:
