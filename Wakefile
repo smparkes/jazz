@@ -1,23 +1,48 @@
-begin; require 'wake/event_handlers/em'; rescue LoadError; end
-begin; require 'wake/deps'; rescue LoadError; end
+watch( %r((^(public|example|spec|lib)/.*)\.haml$), [:load, :created, :modified] ) do |md, event|
+  skip = false
+  if event == :load
+    if File.exist? "#{md[1]}.html"
+      if File.mtime( "#{md[1]}.html" ) > File.mtime( "#{md[1]}.haml" )
+        skip = true
+      end
+    end
+  end
 
-watch( %r(.*), :modified, lambda { |md| File.directory? md[0] } ) do |md|
-  raise Wake::Refresh
+  if !skip
+    # FIX: check mtime diffs on load
+    # FIX: sign html with hash and don't overwrite/delete on bad hash
+    # FIX: support deleted and remove html file
+    
+    cmd = "rm -f #{md[1]}.html && haml -f html5 #{md[0]} #{md[1]}.html && chmod 444 #{md[1]}.html"
+    puts cmd
+    system cmd
+    if  $?.signaled? && $?.termsig == 2
+      Process.kill 2, 0
+    end
+  end
 end
 
-watch( %r(jazrb.wake), :modified ) do |md|
-  raise Wake::Refresh
-end
+watch( %r((^(public|spec|lib)/.*)\.sass$), [:load, :created, :modified] ) do |md, event|
+  skip = false
+  if event == :load
+    if File.exist? "#{md[1]}.css"
+      if File.mtime( "#{md[1]}.css" ) > File.mtime( "#{md[1]}.sass" )
+        skip = true
+      end
+    end
+  end
 
-watch( %r(^((public|spec)/.*)\.haml$), [ :created, :modified ] ) do |md|
-  # FIX: check mtime diffs on load
-  # FIX: sign html with hash and don't overwrite/delete on bad hash
-  # FIX: support deleted and remove html file
-  cmd = "rm -f #{md[1]}.html && haml -f html5 #{md[0]} #{md[1]}.html && chmod 444 #{md[1]}.html"
-  puts cmd
-  system cmd
-  if  $?.signaled? && $?.termsig == 2
-    Process.kill 2, 0
+  if !skip
+    # FIX: check mtime diffs on load
+    # FIX: sign css with hash and don't overwrite/delete on bad hash
+    # FIX: support deleted and remove csss file
+    
+    cmd = "rm -f #{md[1]}.css && sass #{md[0]} #{md[1]}.css && chmod 444 #{md[1]}.css"
+    puts cmd
+    system cmd
+    if  $?.signaled? && $?.termsig == 2
+      Process.kill 2, 0
+    end
   end
 end
 
@@ -37,6 +62,37 @@ map_to_test = lambda do |file, event|
   end
 end
 
+jslint = lambda do |*args|
+  # require 'pp'
+  # pp args
+  files = []
+  # boy, clean this up, but call/splat are subtle
+  if Array === args[0]
+    args = args[0][0]
+    files = args.map { |pair| pair[0][0] }
+    files.compact!
+    files.uniq!
+  else
+    (file, event) = *args
+    files = [ file ]
+  end
+  if !files.empty?
+require 'pp'
+# pp caller(0)
+    cmd = "jslintrb #{files.join(" ")}"
+    puts cmd
+    system cmd
+    if $?.exited? && $?.exitstatus != 0
+      puts "exit status: #{$?.exitstatus}"
+    else
+      puts "\e[32mok\e[0m"
+    end
+    if  $?.signaled? && $?.termsig == 2
+      Process.kill 2, 0
+    end
+  end
+end
+
 jazrb = lambda do |*args|
   files = []
   # boy, clean this up, but call/splat are subtle
@@ -48,7 +104,7 @@ jazrb = lambda do |*args|
   else
     (file, event) = *args
     file = map_to_test.call file, event
-    if file
+   if file
       files = [ file ]
     end
   end
@@ -66,20 +122,28 @@ jazrb = lambda do |*args|
   end
 end
 
-watch( %r(^(spec/.*[Ss]pec)\.js$), [ :load, :created, :modified ] ) do |md,event|
-  jazrb.call md[0], event
+watch( %r(^((example|spec|lib|public)/.*)\.js$), [ :load, :created, :modified ],
+       nil, :batch => :jslint ) do |events|
+  jslint.call events
 end
 
-watch( %r(.*\.x?html?$), [ :load, :created, :modified ], nil, :batch => :html ) do |events|
+watch( %r(^(spec/.*[Ss]pec)\.js$), [ :load, :created, :modified ], nil, :batch => :js ) do |events|
+  jslint.call events
   jazrb.call events
 end
 
+watch( %r(^((public|example)/.*\.x?html?)$), [ :load, :created, :modified ], nil, :batch => :html ) do |events|
+  jazrb.call events
+end
+
+# don't watch jasmine
+watch( %r(^lib/jazrb/jasmine/), [ nil, :load ], lambda { false } )
+
+# don't watch qunit
+watch( %r(^lib/jazrb/qunit/), [ nil, :load ], lambda { false } )
+
 # don't watch vendor
 watch( %r(^(vendor|doc)/), [ nil, :load ], lambda { false } )
-
-Signal.trap('QUIT') do
-  EM.stop
-end
 
 # Local Variables:
 # mode:ruby

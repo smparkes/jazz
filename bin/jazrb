@@ -2,10 +2,10 @@
 
 $VERBOSE = true
 
+require 'pathname'
 require 'jazrb/options'
 
-ENV["JAZRB_JS_PATH"] =
-  JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
+JAZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazrb'))
 
 intro = File.join(JAZ_DIR, "intro.js")
 outro = File.join(JAZ_DIR, "outro.js")
@@ -15,7 +15,7 @@ if $jazrb_qunit
   outro = File.join(JAZ_DIR, "qoutro.js")
 end
 
-args = [ "envjsrb" ]
+args = [ "env JAZRB_JS_PATH='#{JAZ_DIR}' envjsrb" ]
 if $jazrb_deps
   args += [ "--deps", $jazrb_deps ]
 end
@@ -26,7 +26,19 @@ outrod = true
 
 ARGV.each do |f|
 
-  if f =~  /\.x?html?$/ || f =~ %r(^https?://)
+  uri = URI.parse f
+
+  if uri.scheme == nil
+    uri.scheme = "file"
+    begin
+      uri.path = Pathname.new(uri.path).realpath.to_s
+    rescue Errno::ENOENT; end
+    uri = URI.parse uri.to_s
+  end
+
+  uri_s = uri.to_s.sub %r(^file:/([^/])), 'file:///\1'
+
+  if uri.path =~ /\.x?html?$/ || uri.scheme =~ %r(^https?)
     if introd && !outrod
       args << outro
       args << "about:blank"
@@ -36,18 +48,18 @@ ARGV.each do |f|
     if !introd
       args << intro
     end
-    args << f
+    args << uri_s
     introd = true
     outrod = false
-  elsif f == "about:blank"
+  elsif uri.scheme == "about" && uri.opaque == "blank"
     if introd && !outrod
       args << outro
       outrod = true
       introd = false
     end
-    args << f
+    args << uri_s
   else
-    args << f
+    args << uri_s
   end
 
 end
