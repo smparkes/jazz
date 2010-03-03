@@ -1,27 +1,36 @@
 require 'rubygems'
-require 'rake'
 
-task :gemspec => :jasmine
-task :gemspec => :qunit
+# task :gemspec => :jasmine
+# task :gemspec => :qunit
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "jazrb"
-    gem.summary = %Q{Env.js support for running Jasmine JS BDD specs}
-    gem.description = %Q{Jazrb provides support for running specs based on the Jasmine JS BDD using the env.js JavaScript browser environment. Includes support for running under autotest via the autojaz command.}
-    gem.email = "smparkes@smparkes.net"
-    gem.homepage = "http://github.com/smparkes/jazrb"
-    gem.authors = ["Steven Parkes"]
-    gem.add_runtime_dependency "envjs", ">= 0.1.0"
-    gem.add_runtime_dependency "smparkes-eventmachine"
-    gem.add_runtime_dependency "nokogiri"
-    gem.add_development_dependency "ragaskar-jsdoc_helper"
-    # temporarily add vendor/jasmine ...
-    gem.files = FileList["[A-Z]*.*", "{bin,generators,doc,lib,test,spec,vendor/jasmine}/**/*"]
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+gem 'hoe', '>= 2.5'
+require 'hoe'
+
+Hoe.plugin :debugging, :doofus, :git
+Hoe.plugins.delete :rubyforge
+
+Hoe.spec "jazz" do
+
+  developer 'Steven Parkes', 'smparkes@smparkes.net'
+
+  self.readme_file              = 'README.rdoc'
+  self.extra_rdoc_files         = Dir['*.rdoc']
+  self.history_file             = "CHANGELOG.rdoc"
+  self.readme_file              = "README.rdoc"
+
+  self.extra_deps = [
+    ['envjs', '>= 0.1.7'],
+    ['eventmachine', '>= 10.12.11'],
+    ['nokogiri', '>= 1.4.1'],
+    ['haml', '>= 2.2.20']                     
+  ]
+
+  self.extra_dev_deps = [
+    ['ragaskar-jsdoc_helper', '>= 0.2.1']
+  ]
+
+  clean_globs    << "{example,lib}/**/*.html"
+
 end
 
 task :test do
@@ -30,7 +39,7 @@ task :test do
   system cmd
 end
 
-task :test => :check_dependencies
+# task :test => :check_dependencies
 
 task :default => :test
 
@@ -42,15 +51,15 @@ Rake::RDocTask.new do |rdoc|
     version = ""
   end
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "jazrb #{version}"
+  rdoc.title = "jazz #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
 task :qunit do
-  rm_rf "lib/jazrb/qunit"
-  mkdir_p "lib/jazrb/qunit"
-  cp_r "vendor/qunit/qunit/.", "lib/jazrb/qunit/."
+  rm_rf "lib/jazz/qunit"
+  mkdir_p "lib/jazz/qunit"
+  cp_r "vendor/qunit/qunit/.", "lib/jazz/qunit/."
 end
 
 task :jasmine do
@@ -58,10 +67,10 @@ task :jasmine do
   rm_rf "doc/jasmine"
   mkdir_p "doc/jasmine"
   cp_r "vendor/jasmine/doc/.", "doc/jasmine/."
-  rm_rf "lib/jazrb/jasmine"
-  mkdir_p "lib/jazrb/jasmine"
-  cp Dir["vendor/jasmine/lib/jasmine-*.js"][0], "lib/jazrb/jasmine/jasmine.js"
-  cp Dir["vendor/jasmine/lib/*.js"], "lib/jazrb/jasmine"
+  rm_rf "lib/jazz/jasmine"
+  mkdir_p "lib/jazz/jasmine"
+  cp Dir["vendor/jasmine/lib/jasmine-*.js"][0], "lib/jazz/jasmine/jasmine.js"
+  cp Dir["vendor/jasmine/lib/*.js"], "lib/jazz/jasmine"
 end
 
 # Local Variables:

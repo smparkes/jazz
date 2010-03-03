@@ -1,0 +1,29 @@
+!!!
+%html{html_attrs}
+  %head
+    %title jazz specs
+  %body
+    %script{:type => "text/javascript", :src=>"../../vendor/jquery/dist/jquery.js"}
+    %script{:type => "text/javascript", :src=>"../../vendor/json2/json2.js"}
+    :javascript
+      (function(){
+        var global = (function(){return this;}());
+        global.jazz = global.jazz || {};
+        global.jazz.helper = global.jazz.helper || "../../lib/jazz/spec_helper.js";
+        document.write("<script type='text/javascript' src='"+global.jazz.helper+"'></s"+"cript>");
+      }());
+    :javascript
+      (function(){
+        var match = window.location.toString().match(/\?specs=([^&]+)/);
+        if(match){
+          var specs = JSON.parse(unescape(match[1]));
+          for(var i=0; i < specs.length; i++ ) {
+            document.write("<script type='text/javascript' src='" + specs[i] +"'></s"+"cript>");
+          }
+        }
+      }());
+
+/ Local Variables:
+/ mode:auto-revert
+/ End:
+

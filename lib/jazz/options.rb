@@ -1,26 +1,26 @@
 require 'optparse'
 
-$jazrb_verbose = false
-$jazrb_xml = false
-$jazrb_deps = nil
-$jazrb_qunit = false
+$jazz_verbose = false
+$jazz_xml = false
+$jazz_deps = nil
+$jazz_qunit = false
 
 OptionParser.new do |o|
 
   o.on("-v","--verbose") do 
-    $jazrb_verbose = true
+    $jazz_verbose = true
   end
 
   o.on("-x","--xml") do 
-    $jazrb_xml = true
+    $jazz_xml = true
   end
 
   o.on("-q","--qunit") do 
-    $jazrb_qunit = true
+    $jazz_qunit = true
   end
 
   o.on("--deps PATH") do |path|
-    $jazrb_deps = path
+    $jazz_deps = path
   end
 
 end.parse!
