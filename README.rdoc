@@ -1,15 +1,20 @@
-= jazrb
+= jazz
 
-Jazrb provides support for running JavaScript specs written using the
-Jasmine JavaScript BDD framework under env.js. It includes support for
+* http://github.com/smparkes/jazz
+* http://groups.google.com/group/jazz-talk
+* #jazz-talk at freenode
+
+== Description
+
+Jazz provides support for running JavaScript tests and specs written
+using frameworks such as Jasmine under env.js. It includes support for
 running via wake.
 
-Discussion at http://groups.google.com/group/jazrb.
 
 == Install
 
-You can install the gem via <tt>gem install smparkes-jazrb</tt>.  If
-you want to install from github (http://github.com/smparkes/jazrb),
+You can install the gem via <tt>gem install smparkes-jazz</tt>.  If
+you want to install from github (http://github.com/smparkes/jazz),
 you'll need to checkout the Jasmine submodule (<tt>git submodule
 update --init</tt>) and also need to make sure you have the
 prerequisites listed in the gemspec in the Rakefile. <tt>rake
@@ -25,14 +30,14 @@ see and run the examples.
 == Use
 
 From the root of a project, i.e., the parent of the <tt>spec</tt>
-directory, you can use the <tt>jazrb</tt> command as you would the
+directory, you can use the <tt>jazz</tt> command as you would the
 rspec <tt>spec</tt> command, e.g.,
 
-     jazrb spec/foo_spec.js spec/bar_spec.js
+     jazz spec/foo_spec.js spec/bar_spec.js
 
-You can also execute HTML specs via jazrb:
+You can also execute HTML specs via jazz:
 
-     jazrb spec/foo_spec.html
+     jazz spec/foo_spec.html
 
 or even normal pages, that have the proper hooks to run as examples
 (see below).
@@ -40,17 +45,17 @@ or even normal pages, that have the proper hooks to run as examples
 HTML files must be valid XML, i.e., XHTML, at this time.
 
 The HTML fixture must load the necessary test files. Any number of
-fixtures can be passed to the <tt>jazrb</tt> command.
+fixtures can be passed to the <tt>jazz</tt> command.
 
-jazrb uses env.js to run the tests, feeding it your HTML and
+jazz uses env.js to run the tests, feeding it your HTML and
 JavaScript, plus the necessary JavaScript and controls to make the tests
 run correctly. You can see the entire <tt>envjsrb</tt> command by
-passing <tt>jazrb</tt> the <tt>-v</tt> flag.
+passing <tt>jazz</tt> the <tt>-v</tt> flag.
 
 The Jasmine tests are configured to report results in streaming XML
-(JUnit format, more or less), which <tt>jazrb</tt> turns into the
+(JUnit format, more or less), which <tt>jazz</tt> turns into the
 familiar rspec format. The <tt>--xml</tt> flag
-causes <tt>jazrb</tt> to display the raw XML output.
+causes <tt>jazz</tt> to display the raw XML output.
 
 To run all the tests in the <tt>spec</tt> directory repeatedly you can
 use wake:
@@ -61,7 +66,7 @@ or
 
   wake
 
-See jazrb's <tt>Wakefile</tt> file and the
+See jazz's <tt>Wakefile</tt> file and the
 discussion on examples below.
 
 You can also try using <tt>autojaz</tt> as
@@ -70,7 +75,7 @@ you would use <tt>autospec</tt>:
    autojaz
 
 You'll need to install the ZenTest gem if you don't have it installed;
-<tt>jazrb</tt> can be used without ZenTest installed, but
+<tt>jazz</tt> can be used without ZenTest installed, but
 <tt>autojaz</tt> cannot be. Note that <tt>autojaz</tt> may be
 deprecated in favor of <tt>wake</tt>.
 
@@ -89,7 +94,7 @@ it reruns the test. It knows how to find the HTML fixtures for specs
 where they exist in the right place, or it just runs the JavaScript
 spec itself. An example of the former is the pair
 <tt>example/hello_world.html</tt> and
-<tt>spec/example/hello_world_spec.js</tt>: jazrb will reload the HTML if either file is changed.
+<tt>spec/example/hello_world_spec.js</tt>: jazz will reload the HTML if either file is changed.
 An example of the latter
 is <tt>spec/example/plain_spec.js</tt>.
 
@@ -110,7 +115,7 @@ to true.
 
 1. Add example
 
-1. Support multiple fixtures on the <tt>jazrb</tt> command. (Actually, this is entirely due to <tt>envjsrb</tt> supporting multiple fixtures. You need a recent build from github or an smparkes-envjs gem version of at least 0.0.5.)
+1. Support multiple fixtures on the <tt>jazz</tt> command. (Actually, this is entirely due to <tt>envjsrb</tt> supporting multiple fixtures. You need a recent build from github or an smparkes-envjs gem version of at least 0.0.5.)
 
 == Things to do
 

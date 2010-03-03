@@ -5,7 +5,7 @@ watch( %r(.*), :modified, lambda { |md| File.directory? md[0] } ) do |md|
   raise Wake::Refresh
 end
 
-watch( %r(jazrb.wake), :modified ) do |md|
+watch( %r(jazz.wake), :modified ) do |md|
   raise Wake::Refresh
 end
 
@@ -105,7 +105,7 @@ watch( %r(^((spec|lib|public)/.*)\.js$), [ :load, :created, :modified ],
   jslint.call events
 end
 
-jazrb = lambda do |*args|
+jazz = lambda do |*args|
   files = []
   # boy, clean this up, but call/splat are subtle
   if Array === args[0]
@@ -124,7 +124,7 @@ jazrb = lambda do |*args|
     deps = nil
     begin deps = "--deps #{db_path}"
     rescue; end
-    cmd = "jazrb #{deps} #{files.join(" ")}"
+    cmd = "jazz #{deps} #{files.join(" ")}"
     puts cmd
     system cmd
     puts "exit status: #{$?.exitstatus}" if $?.exited? && $?.exitstatus != 0
@@ -141,18 +141,18 @@ end
 
 watch( %r(^(spec/.*[Ss]pec)\.js$), [ :load, :created, :modified ], nil, :batch => :js ) do |events|
   jslint.call events
-  jazrb.call events
+  jazz.call events
 end
 
 watch( %r(^((public|example)/.*\.x?html?)$), [ :load, :created, :modified ], nil, :batch => :html ) do |events|
-  jazrb.call events
+  jazz.call events
 end
 
 # don't watch jasmine
-watch( %r(^lib/jazrb/jasmine/), [ nil, :load ], lambda { false } )
+watch( %r(^lib/jazz/jasmine/), [ nil, :load ], lambda { false } )
 
 # don't watch qunit
-watch( %r(^lib/jazrb/qunit/), [ nil, :load ], lambda { false } )
+watch( %r(^lib/jazz/qunit/), [ nil, :load ], lambda { false } )
 
 # don't watch vendor
 watch( %r(^(vendor|doc)/), [ nil, :load ], lambda { false } )
