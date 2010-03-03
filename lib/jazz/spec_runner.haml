@@ -1,16 +1,16 @@
 !!!
 %html{html_attrs}
   %head
-    %title jazrb specs
+    %title jazz specs
   %body
     %script{:type => "text/javascript", :src=>"../../vendor/jquery/dist/jquery.js"}
     %script{:type => "text/javascript", :src=>"../../vendor/json2/json2.js"}
     :javascript
       (function(){
         var global = (function(){return this;}());
-        global.jazrb = global.jazrb || {};
-        global.jazrb.helper = global.jazrb.helper || "../../lib/jazrb/spec_helper.js";
-        document.write("<script type='text/javascript' src='"+global.jazrb.helper+"'></s"+"cript>");
+        global.jazz = global.jazz || {};
+        global.jazz.helper = global.jazz.helper || "../../lib/jazz/spec_helper.js";
+        document.write("<script type='text/javascript' src='"+global.jazz.helper+"'></s"+"cript>");
       }());
     :javascript
       (function(){
