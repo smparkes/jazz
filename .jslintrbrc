@@ -1,5 +1,4 @@
-{ "indent": 2,
-  "predef": [ "Ruby", "load", "print", "jasmine", "window", "document", "jQuery", "jazz" ],
+  "predef": [ "Ruby", "load", "print", "jasmine", "window", "document", "jQuery", "jazrb" ],
   "white": false,
   "onevar": false,
   "nomen": false,
