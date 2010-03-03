@@ -1,7 +1,7 @@
 require 'rubygems'
 
-task :gemspec => :jasmine
-task :gemspec => :qunit
+# task :gemspec => :jasmine
+# task :gemspec => :qunit
 
 gem 'hoe', '>= 2.5'
 require 'hoe'
@@ -10,9 +10,8 @@ Hoe.plugin :debugging, :doofus, :git
 Hoe.plugins.delete :rubyforge
 
 Hoe.spec "jazz" do
-  developer 'Steven Parkes', 'smparkes@smparkes.net'
 
-  summary %Q{Env.js support for running JS tests and specs}
+  developer 'Steven Parkes', 'smparkes@smparkes.net'
 
   self.readme_file              = 'README.rdoc'
   self.extra_rdoc_files         = Dir['*.rdoc']
@@ -22,15 +21,17 @@ Hoe.spec "jazz" do
   self.extra_deps = [
     ['envjs', '>= 0.1.7'],
     ['eventmachine', '>= 10.12.11'],
-    ['nokogiri', '>= 1.4.1']
+    ['nokogiri', '>= 1.4.1'],
+    ['haml', '>= 2.2.20']                     
   ]
 
   self.extra_dev_deps = [
     ['ragaskar-jsdoc_helper', '>= 0.2.1']
   ]
-end
 
-    gem.homepage = "http://github.com/smparkes/jazz"
+  clean_globs    << "{example,lib}/**/*.html"
+
+end
 
 task :test do
   cmd = "wake --once"
@@ -38,7 +39,7 @@ task :test do
   system cmd
 end
 
-task :test => :check_dependencies
+# task :test => :check_dependencies
 
 task :default => :test
 

@@ -6,10 +6,9 @@
 
 == Description
 
-Jazz provides support for running JavaScript tests and specs written
-using frameworks such as Jasmine under env.js. It includes support for
-running via wake.
-
+Support for running JS tests and specs under env.js and browsers. jazz
+cooperates with wake and envjs to track dependences for incremental
+build and test.
 
 == Install
 
