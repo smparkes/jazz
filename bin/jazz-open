@@ -12,20 +12,20 @@ require 'optparse'
 OptionParser.new do |o|
 
   o.on("-h[prefix]","--http[prefix]") do |prefix|
-    $jazrb_http = true
-    $jazrb_prefix = prefix
+    $jazz_http = true
+    $jazz_prefix = prefix
   end
 
   o.on("-b browser","--browser browser") do |browser|
-    $jazrb_browser = browser
+    $jazz_browser = browser
   end
 
 end.parse!
 
 prefix = nil
 
-if $jazrb_http
-  prefix = $jazrb_prefix
+if $jazz_http
+  prefix = $jazz_prefix
   if !prefix
     prefix = "http://localhost:8000/"
   end
@@ -36,7 +36,7 @@ end
 
 runner = prefix + "spec/spec_runner.html"
 
-runner = "file://" + File.expand_path( File.join( File.dirname(__FILE__), "..", "lib", "jazrb", "spec_runner.html" ) )
+runner = "file://" + File.expand_path( File.join( File.dirname(__FILE__), "..", "lib", "jazz", "spec_runner.html" ) )
 
 files = []
 pairs = {}
@@ -54,7 +54,7 @@ specs = specs.select do |spec|
 end
 
 specs.map! do |spec|
-  $jazrb_http ? prefix + spec : "file://" + File.expand_path(spec)
+  $jazz_http ? prefix + spec : "file://" + File.expand_path(spec)
 end
 
 if false

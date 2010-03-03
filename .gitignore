@@ -8,3 +8,4 @@ pkg
 /*jazz-*.gem
 /*jazz.gemspec
 .Wakefile.deps
+/lib/jazz/spec_runner.html

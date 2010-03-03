@@ -1,2 +1,2 @@
-{ "predef": [ "Ruby", "load", "print", "jasmine", "window", "document", "jQuery", "jazrb",
+{ "predef": [ "Ruby", "load", "print", "jasmine", "window", "document", "jQuery", "jazz",
               "describe", "it", "xit", "expect" ] }

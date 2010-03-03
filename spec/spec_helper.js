@@ -2,9 +2,9 @@
 "use strict";
 (function(){
   var global = (function(){return this;}());
-  global.jazrb = global.jazrb || {};
-  global.jazrb.app = global.jazrb.app || {};
-  global.jazrb.app.root = global.jazrb.app.root || ".";
-  global.jazrb.helper = global.jazrb.helper || global.jazrb.app.root + "/lib/jazrb/spec_helper.js";
-  document.write("<script type='text/javascript' src='"+global.jazrb.helper+"'></script>");
+  global.jazz = global.jazz || {};
+  global.jazz.app = global.jazz.app || {};
+  global.jazz.app.root = global.jazz.app.root || ".";
+  global.jazz.helper = global.jazz.helper || global.jazz.app.root + "/lib/jazz/spec_helper.js";
+  document.write("<script type='text/javascript' src='"+global.jazz.helper+"'></script>");
 }());
