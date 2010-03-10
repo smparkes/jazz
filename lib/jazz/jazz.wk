@@ -40,7 +40,9 @@ class Jazz::Plugin < Wake::Plugin
 
   def fire_all
     lambda do |nodes|
-      system "jazz #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+      cmd = "jazz #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+      puts cmd
+      system cmd
     end
   end
 
