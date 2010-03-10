@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+
+require "wake/graph/node/weak"
+
+module Jazz; end
+class Jazz::Plugin < Wake::Plugin
+  extend Wake::Plugin::Class
+
+  FIXTURE = lambda do |path|
+    fixture = nil
+
+    if path =~ %r{((S|(_s))pec)\.js$}
+      fixture = path.sub( %r{[^/]+/}, "" ).sub( %r{(S|(_s))pec.js$}, ".html" )
+    end
+
+    fixture
+  end
+
+  default :regexp => /\.html$|((S|(_s))pec)\.js$/,
+          :options => { :fixture => FIXTURE }
+
+  def watcher
+    default = super
+    lambda do |path, graph|
+      if node = default.call( path, graph )
+        virtual = Node::Virtual.new( node, cls.default[:options][:virtual] )
+        virtual = create graph, virtual, :from => node, :plugin => self
+        fixture = cls.default[:options][:fixture].call path
+        create graph, Node::Weak.new( fixture ), :to => virtual if fixture
+      end
+    end
+  end
+
+  def primary node
+    values = node.depends_on.nodes.values.uniq
+    return values[0] if values.length == 1
+    raise "ambiguous primary for #{path}" if values.length > 2
+    values.detect { |v| v.path =~ /\.html$/ }
+  end
+
+  def fire_all
+    lambda do |nodes|
+      system "jazz #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+    end
+  end
+
+end
