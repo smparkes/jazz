@@ -20,6 +20,11 @@ class Jazz::Plugin < Wake::Plugin
   default :regexp => /\.html$|((S|(_s))pec)\.js$/,
           :options => { :fixture => FIXTURE }
 
+  def out_of_date? node, flag
+    return true if super
+    return flag
+  end
+
   def watcher
     default = super
     lambda do |path, graph|
@@ -64,19 +69,15 @@ class Jazz::Plugin < Wake::Plugin
         end
       end
       succeeded.each do |node, v|
-        if v
-          # p "okay", node.path          
-          FileUtils.mkdir_p Pathname(node.path).dirname
-          FileUtils.touch node.path
-        else
-          # p "not okay", node.path          
-          FileUtils.rm_f node.path
+        FileUtils.mkdir_p Pathname(node.path).dirname
+        open(node.path,"w") do |f|
+          f.truncate 0
+          f.write({:succeded => v}.to_json)
         end
       end
       return status
-
-
     end
+
   end
 
 end
