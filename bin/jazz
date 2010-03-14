@@ -38,7 +38,7 @@ ARGV.each do |f|
 
   uri_s = uri.to_s.sub %r(^file:/([^/])), 'file:///\1'
 
-  if uri.path =~ /\.x?html?$/ || uri.scheme =~ %r(^https?)
+  if true || uri.path =~ /\.x?html?$/ || uri.scheme =~ %r(^https?)
     if introd && !outrod
       args << outro
       args << "about:blank"
@@ -89,15 +89,19 @@ $spec_info = {}
 $spec_info[:specs] = []
 $spec_info[:failures] = []
 $spec_info[:pending] = []
+$success = []
+$id = nil
 
 class SAX < Nokogiri::XML::SAX::Document
 
   def start_element name, attrs
-    # p attrs
     attrs = Hash[*attrs]
-    # p attrs
     case name
     when "testsuites";
+      if attrs["id"] != $id
+        $success << true
+      end
+      $id = attrs["id"]
     when "testsuite";
       @testsuite_name = attrs["name"]
       if @testsuite_pending = ( attrs["skipped"] == "true" )
@@ -110,6 +114,7 @@ class SAX < Nokogiri::XML::SAX::Document
       tc[:name] = @testsuite_name + " : " + attrs["name"]
       @testcase_failed = false
     when "failure";
+      $success[-1] = false
       $spec_info[:failures] << (tc = $spec_info[:specs].last)
       tc[:message] = attrs["message"]
       @testcase_failed = true
@@ -239,4 +244,15 @@ if !$jazz_xml
   end
   puts msg
 end
+
+if $jazz_wake
+  $success.each_with_index do |result, index|
+    if !result
+      puts "\##{ARGV[index]}"
+    end
+  end
+
+end
+
+
 exit ( !failures.nil? && failures > 0 ) ? 1 : 0

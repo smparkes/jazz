@@ -4,6 +4,7 @@ $jazz_verbose = false
 $jazz_xml = false
 $jazz_deps = nil
 $jazz_qunit = false
+$jazz_wake = false
 
 OptionParser.new do |o|
 
@@ -21,6 +22,10 @@ OptionParser.new do |o|
 
   o.on("--deps PATH") do |path|
     $jazz_deps = path
+  end
+
+  o.on("--wake") do
+    $jazz_wake = true
   end
 
 end.parse!

@@ -11,6 +11,7 @@ class Jazz::Plugin < Wake::Plugin
 
     if path =~ %r{((S|(_s))pec)\.js$}
       fixture = path.sub( %r{[^/]+/}, "" ).sub( %r{(S|(_s))pec.js$}, ".html" )
+      fixture = nil if !File.exists? fixture
     end
 
     fixture
@@ -40,9 +41,41 @@ class Jazz::Plugin < Wake::Plugin
 
   def fire_all
     lambda do |nodes|
+      succeeded = nodes.inject({}) { |hash, node| hash[node] = true; hash }
       cmd = "jazz #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
       puts cmd
-      system cmd
+      cmd = "jazz --wake #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+      status = open("|"+cmd) do |f|
+        nl = true
+        while c = f.getc
+          if c == ?\n
+            nl = true
+            $stdout.putc c
+            $stdout.flush
+          elsif !nl or c != ?\#
+            nl = false
+            $stdout.putc c
+            $stdout.flush
+          else
+            path = f.readline.chomp
+            array = nodes.select { |node| primary(node).path == path }
+            succeeded[array[0]] = false
+          end
+        end
+      end
+      succeeded.each do |node, v|
+        if v
+          # p "okay", node.path          
+          FileUtils.mkdir_p Pathname(node.path).dirname
+          FileUtils.touch node.path
+        else
+          # p "not okay", node.path          
+          FileUtils.rm_f node.path
+        end
+      end
+      return status
+
+
     end
   end
 
