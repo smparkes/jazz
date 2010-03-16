@@ -7,19 +7,22 @@ require 'jazz/options'
 
 JAZZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazz'))
 
-driver = "envjsrb"
+framework = "jasmine"
 
 if $jazz_qunit
-  driver = "qunit"
+  framework = "qunit"
 end
 
-if $jazz_envjs
-  driver = "envjsrb"
+if $jazz_jasmine
+  framework = "jasmine"
 end
 
-intro = File.join(JAZZ_DIR, driver, "intro.js")
-outro = File.join(JAZZ_DIR, driver, "outro.js")
+driver = "envjsrb"
 
+intro = File.join(JAZZ_DIR, framework, "intro.js")
+outro = File.join(JAZZ_DIR, framework, "outro.js")
+
+args = [ "envjsrb" ]
 args = [ "env JAZZ_JS_PATH='#{JAZZ_DIR}' envjsrb" ]
 
 if $jazz_deps
