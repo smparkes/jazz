@@ -7,25 +7,59 @@ require 'jazz/options'
 
 JAZZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazz'))
 
-intro = File.join(JAZZ_DIR, "intro.js")
-outro = File.join(JAZZ_DIR, "outro.js")
+driver = "envjsrb"
 
 if $jazz_qunit
-  intro = File.join(JAZZ_DIR, "qintro.js")
-  outro = File.join(JAZZ_DIR, "qoutro.js")
+  driver = "qunit"
 end
 
+if $jazz_envjs
+  driver = "envjsrb"
+end
+
+intro = File.join(JAZZ_DIR, driver, "intro.js")
+outro = File.join(JAZZ_DIR, driver, "outro.js")
+
 args = [ "env JAZZ_JS_PATH='#{JAZZ_DIR}' envjsrb" ]
+
 if $jazz_deps
   args += [ "--deps", $jazz_deps ]
 end
+
 args << intro
 
 introd = true
 outrod = true
 
-ARGV.each do |f|
+def helper f
+  spec_dir = File.dirname( File.join("spec", f) );
+  helper = nil
+  while spec_dir and spec_dir != "." and spec_dir !~ /^\s*$/ 
+    helper = File.join( spec_dir, "spec_helper.js" );
+    if File.exist? helper
+      break
+    end
+    helper = File.join( spec_dir, "SpecHelper.js" );
+    if File.exist? helper
+      break
+    end
+    spec_dir = File.dirname( spec_dir )
+  end
+  return to_uri(helper) if File.exists? helper
+end
 
+def spec f
+  dir = File.dirname( File.join("spec", f) );
+  base = File.basename(f)
+  base.sub! /\.(html|js)$/,""
+  helper = File.join( dir, base + "_spec.js" );
+  return helper if File.exist? helper
+  helper = File.join( dir, base + "Spec.js" );
+  return helper if File.exist? helper
+  nil
+end
+
+def to_uri f
   uri = URI.parse f
 
   if uri.scheme == nil
@@ -36,7 +70,30 @@ ARGV.each do |f|
     uri = URI.parse uri.to_s
   end
 
-  uri_s = uri.to_s.sub %r(^file:/([^/])), 'file:///\1'
+  class << uri
+    def to_s
+      s = super
+      s.sub %r(^file:/([^/])), 'file:///\1'
+    end
+  end
+
+  uri
+end
+
+def level f
+  dir = File.dirname(f)
+  level = 0;
+  while dir and dir != "." do
+    level += 1
+    dir =File.dirname(dir)
+  end
+  # p f, level
+  level
+end
+
+ARGV.each do |f|
+
+  uri = to_uri f
 
   if true || uri.path =~ /\.x?html?$/ || uri.scheme =~ %r(^https?)
     if introd && !outrod
@@ -46,9 +103,26 @@ ARGV.each do |f|
       introd = false
     end
     if !introd
-      args << intro
+      # args << intro
     end
-    args << uri_s
+
+    args << uri
+
+    args << intro
+
+    level(f).times 
+
+    root = URI.escape("javascript:jazz.root='" + ("../"*level(f)) +"'")
+    root.gsub!("'","\\\\'")
+    args << root
+
+    h = helper f
+
+    args << h if h
+
+    h = spec f
+    args << h if h
+
     introd = true
     outrod = false
   elsif uri.scheme == "about" && uri.opaque == "blank"
@@ -60,6 +134,10 @@ ARGV.each do |f|
     args << uri_s
   else
     args << uri_s
+
+    h = helper f
+
+    args << f if h
   end
 
 end

@@ -7,5 +7,7 @@ pkg
 /lib/jazz/jasmine
 /*jazz-*.gem
 /*jazz.gemspec
-.Wakefile.deps
+/.wake
 /lib/jazz/spec_runner.html
+/example/*.html
+/example/*/*.html

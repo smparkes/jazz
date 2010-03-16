@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 
+require 'fileutils'
 require "wake/graph/node/weak"
 
 module Jazz; end

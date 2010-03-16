@@ -4,6 +4,7 @@ $jazz_verbose = false
 $jazz_xml = false
 $jazz_deps = nil
 $jazz_qunit = false
+$jazz_envjs = false
 $jazz_wake = false
 
 OptionParser.new do |o|
