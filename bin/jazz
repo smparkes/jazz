@@ -26,8 +26,6 @@ if $jazz_deps
   args += [ "--deps", $jazz_deps ]
 end
 
-args << intro
-
 introd = true
 outrod = true
 
@@ -83,7 +81,7 @@ end
 def level f
   dir = File.dirname(f)
   level = 0;
-  while dir and dir != "." do
+  while dir and dir != "." and dir do
     level += 1
     dir =File.dirname(dir)
   end
@@ -95,24 +93,32 @@ ARGV.each do |f|
 
   uri = to_uri f
 
-  if true || uri.path =~ /\.x?html?$/ || uri.scheme =~ %r(^https?)
+  if true
+
     if introd && !outrod
       args << outro
-      args << "about:blank"
       outrod = true
       introd = false
     end
-    if !introd
-      # args << intro
+
+    if outrod && !introd && uri.path =~ %r{\.js$}
+      args << "about:blank"
     end
 
-    args << uri
+    if uri.path !~ %r{\.js$}
+      args << uri
+    end
 
     args << intro
 
-    level(f).times 
+    root = nil
 
-    root = URI.escape("javascript:jazz.root='" + ("../"*level(f)) +"'")
+    if uri.path !~ %r{\.js$} 
+      level(f).times 
+      root = URI.escape("javascript:jazz.root='" + ("../"*level(f)) +"'")
+    else
+      root = URI.escape("javascript:jazz.root=''")
+    end
     root.gsub!("'","\\\\'")
     args << root
 
@@ -122,6 +128,10 @@ ARGV.each do |f|
 
     h = spec f
     args << h if h
+
+    if uri.path =~ %r{\.js$}
+      args << uri
+    end
 
     introd = true
     outrod = false
