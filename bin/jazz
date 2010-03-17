@@ -34,8 +34,12 @@ args = [ "env JAZZ_JS_PATH='#{JAZZ_DIR}' #{driver}" ]
 introd = true
 outrod = true
 
-def helper f
-  spec_dir = File.dirname( File.join("spec", f) );
+def helper f, top
+  spec = "spec"
+  if top && top.length > 0
+    spec = File.join(top, spec)
+  end
+  spec_dir = File.dirname( File.join(spec, f) );
   helper = nil
   while spec_dir and spec_dir != "." and spec_dir !~ /^\s*$/ 
     helper = File.join( spec_dir, "spec_helper.js" );
@@ -51,8 +55,12 @@ def helper f
   return to_uri(helper) if File.exists? helper
 end
 
-def spec f
-  dir = File.dirname( File.join("spec", f) );
+def spec f, top
+  spec = "spec"
+  if top && top.length > 0
+    spec = File.join(top, spec)
+  end
+  dir = File.dirname( File.join(spec, f) );
   base = File.basename(f)
   base.sub! /\.(html|js)$/,""
   helper = File.join( dir, base + "_spec.js" );
@@ -116,22 +124,27 @@ ARGV.each do |f|
 
     args << intro
 
-    root = nil
+    top = ""
 
+    root = nil
     if uri.path !~ %r{\.js$} 
-      level(f).times 
       root = URI.escape("javascript:jazz.root='" + ("../"*level(f)) +"'")
     else
-      root = URI.escape("javascript:jazz.root=''")
+      # not general ...
+      top = f.sub %r{(^|/)spec/.*}, ""
+      if top.length > 0
+        top += "/"
+      end
+      root = URI.escape("javascript:jazz.root='" + (top) +"'")
     end
     root.gsub!("'","\\\\'")
     args << root
 
-    h = helper f
+    h = helper f, top
 
     args << h if h
 
-    h = spec f
+    h = spec f, top
     args << h if h
 
     if uri.path =~ %r{\.js$}
