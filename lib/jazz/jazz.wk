@@ -21,9 +21,15 @@ class Jazz::Plugin < Wake::Plugin
   default :regexp => /\.html$|((S|(_s))pec)\.js$/,
           :options => { :fixture => FIXTURE }
 
+  def initialize *args
+    super
+    @succeeded = false
+  end
+
   def out_of_date? node, flag
+    raise "hell" if flag == true || flag == false
     return true if super
-    return flag
+    return flag == :all || (flag == :failed && !@succeeded)
   end
 
   def watcher
@@ -31,26 +37,47 @@ class Jazz::Plugin < Wake::Plugin
     lambda do |path, graph|
       if node = default.call( path, graph )
         virtual = Node::Virtual.new( node, cls.default[:options][:virtual] )
-        virtual = create graph, virtual, :from => node, :plugin => self
+        virtual = create graph, virtual, :from => node, :plugin => self, :primary => node
         fixture = cls.default[:options][:fixture].call path
-        create graph, Node::Weak.new( fixture ), :to => virtual if fixture
+        if fixture
+          fixture = create graph, Node::Weak.new( fixture ), :to => virtual 
+          virtual.primary = fixture
+        end
+        begin
+          File.open(virtual.path) do |f|
+            json = f.read
+            hash = JSON.parse(json)
+            @succeeded = hash["succeeded"]
+            hash["deps"].each do |dep|
+              create graph, Node::Weak.new( dep ), :to => virtual
+            end
+          end
+        end
       end
     end
   end
 
-  def primary node
+  def _primary node
+    p "b", object_id #, self
+    p @primary
+    p @fixture
+    raise "hell" if !@primary
+    return @primary
     values = node.depends_on.nodes.values.uniq
     return values[0] if values.length == 1
-    raise "ambiguous primary for #{path}" if values.length > 2
+    require 'pp'
+    pp values.map { |v| v.path }
+    raise "ambiguous primary for #{node.path}" if values.length > 2
     values.detect { |v| v.path =~ /\.html$/ }
   end
 
   def fire_all
     lambda do |nodes|
-      succeeded = nodes.inject({}) { |hash, node| hash[node] = true; hash }
-      cmd = "jazz #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+      results = nodes.inject({}) { |hash, node| hash[node] = {"succeeded" => true}; hash }
+      cmd = "jazz #{nodes.map { |node| node.primary.path }.uniq.join(' ')}"
       puts cmd
-      cmd = "jazz --wake #{nodes.map { |node| primary(node).path }.uniq.join(' ')}"
+      cmd = "jazz --wake #{nodes.map { |node| node.primary.path }.uniq.join(' ')}"
+      current = nil
       status = open("|"+cmd) do |f|
         nl = true
         while c = f.getc
@@ -63,17 +90,29 @@ class Jazz::Plugin < Wake::Plugin
             $stdout.putc c
             $stdout.flush
           else
-            path = f.readline.chomp
-            array = nodes.select { |node| primary(node).path == path }
-            succeeded[array[0]] = false
+            line = f.readline.chomp
+            if m = %r{^([^\#]+)\s+([^\s]*)}.match(line)
+              path = m[1]
+              result = m[2]
+              array = nodes.select { |node| node.primary.path == path }
+              current = results[array[0]]
+              current["succeeded"] = result == "failed" ? false : true
+            elsif m = %r{^\#([^\s]*)}.match(line)
+              raise "unexpected line order: #{line}" if !current
+              current["deps"] ||= []
+              current["deps"] << m[1]              
+            else
+              raise "unexpected line: #{line}"
+            end
           end
         end
       end
-      succeeded.each do |node, v|
+      results.each do |node, v|
         FileUtils.mkdir_p Pathname(node.path).dirname
         open(node.path,"w") do |f|
           f.truncate 0
-          f.write({:succeded => v}.to_json)
+          json = {"succeeded" => v["succeeded"], "deps" => v["deps"]}.to_json
+          f.write(json)
         end
       end
       return status

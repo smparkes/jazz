@@ -2,6 +2,8 @@
 
 $VERBOSE = true
 
+$wake = ""
+
 require 'pathname'
 require 'jazz/options'
 
@@ -19,15 +21,15 @@ end
 
 driver = "envjsrb"
 
-intro = File.join(JAZZ_DIR, framework, "intro.js")
-outro = File.join(JAZZ_DIR, framework, "outro.js")
+if $jazz_wake
+  driver += " --wake"
+end
+
+intro = "file://"+File.join(JAZZ_DIR, framework, "intro.js")
+outro = "file://"+File.join(JAZZ_DIR, framework, "outro.js")
 
 args = [ "envjsrb" ]
-args = [ "env JAZZ_JS_PATH='#{JAZZ_DIR}' envjsrb" ]
-
-if $jazz_deps
-  args += [ "--deps", $jazz_deps ]
-end
+args = [ "env JAZZ_JS_PATH='#{JAZZ_DIR}' #{driver}" ]
 
 introd = true
 outrod = true
@@ -187,6 +189,8 @@ class SAX < Nokogiri::XML::SAX::Document
 
   def start_element name, attrs
     attrs = Hash[*attrs]
+    @wake = false
+    @testcase_failed = false
     case name
     when "testsuites";
       if attrs["id"] != $id
@@ -209,6 +213,7 @@ class SAX < Nokogiri::XML::SAX::Document
       $spec_info[:failures] << (tc = $spec_info[:specs].last)
       tc[:message] = attrs["message"]
       @testcase_failed = true
+    when "wake"; @wake = true
     else; raise "hell: #{name}"
     end
   end
@@ -218,10 +223,14 @@ class SAX < Nokogiri::XML::SAX::Document
       $spec_info[:failures].last[:stack] ||= ""
       $spec_info[:failures].last[:stack] << string
     end
+    if @wake
+      $wake += string
+    end
   end
 
   def end_element name
     case name
+    when "wake"; raise Restart
     when "testsuites";
       raise Restart
     when "testsuite";
@@ -337,12 +346,55 @@ if !$jazz_xml
 end
 
 if $jazz_wake
-  $success.each_with_index do |result, index|
-    if !result
-      puts "\##{ARGV[index]}"
+  files = {}
+  paths = {}
+  ARGV.each do |file|
+    path = URI.parse(file).path
+    path = Pathname(path).realpath.to_s
+    files[path] = {}
+    paths[file] = path
+  end
+  current = nil
+  introp = "#" + intro
+  outrop = "#" + outro
+  if $wake
+    last = nil
+    $wake.split("\n").each do |line|
+      next if line =~ %r{^\s*$}
+      next if line =~ %r{^\#\#?javascript:}
+      if m  = %r{^\#\#(.*)}.match(line)
+        next if !current
+        path = URI.parse(m[1]).path
+        path = Pathname(path).realpath.to_s
+        current[path] = path
+        next
+      end
+      if line == introp
+        current = {}
+        next
+      end
+      if line == outrop
+        require 'pp'
+        current.delete last
+        files[last] = current.keys
+        current = nil
+        next
+      end
+      if m  = %r{^\#(.*)}.match(line)
+        raise "hell" if !current
+        path = URI.parse(m[1]).path
+        path = Pathname(path).realpath.to_s
+        current[path] = path
+        last = path
+      end
     end
   end
-
+  $success.each_with_index do |result, index|
+    puts "\##{ARGV[index]} #{result ? 'succeeded' : 'failed' }"
+    files[paths[ARGV[index]]].each do |dep|
+      puts "###{dep}"
+    end
+  end
 end
 
 
