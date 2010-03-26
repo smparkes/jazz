@@ -29,7 +29,7 @@ class Jazz::Plugin < Wake::Plugin
         virtual = create graph, virtual, :from => node, :plugin => self, :primary => node
         fixture = cls.default[:options][:fixture].call path
         if fixture
-          fixture = create graph, Node::Weak.new( graph, fixture ), :to => virtual 
+          fixture = create graph, Node::Weak.new( fixture ), :to => virtual 
           virtual.primary = fixture
         end
       end

@@ -20,7 +20,7 @@ Hoe.spec "jazz" do
 
   self.extra_deps = [
     ['envjs', '>= 0.1.7'],
-    ['eventmachine', '>= 10.12.11'],
+    ['smparkes-eventmachine', '>= 0.12.11'],
     ['nokogiri', '>= 1.4.1'],
     ['haml', '>= 2.2.20']                     
   ]
