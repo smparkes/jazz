@@ -3,8 +3,6 @@
 coverage
 rdoc
 pkg
-/doc/jasmine
-/lib/jazz/jasmine
 /*jazz-*.gem
 /*jazz.gemspec
 /.wake
