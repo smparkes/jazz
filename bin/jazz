@@ -103,6 +103,8 @@ def level f
   level
 end
 
+last_path = nil
+
 ARGV.each do |f|
 
   uri = to_uri f
@@ -120,6 +122,9 @@ ARGV.each do |f|
     end
 
     if uri.path !~ %r{\.js$}
+      if last_path =~ %r{\.js$}
+        args << "about:blank"
+      end
       args << uri
     end
 
@@ -168,6 +173,8 @@ ARGV.each do |f|
 
     args << f if h
   end
+
+  last_path = uri.path
 
 end
 
