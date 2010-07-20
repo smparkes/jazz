@@ -9,8 +9,10 @@ VERSION
 Wakefile
 bin/jazz
 bin/jazz-open
-example/hello_world.haml
-example/nested/HelloWorld.haml
+example/hello_world.html.haml
+example/nested/HelloWorld.html.haml
+example/nested/spec_helper.js
+example/spec_helper.js
 lib/jazz.rb
 lib/jazz/jasmine/intro.js
 lib/jazz/jasmine/outro.js
@@ -21,9 +23,8 @@ lib/jazz/qunit/outro.js
 lib/jazz/qunit/qunit.css
 lib/jazz/qunit/qunit.js
 lib/jazz/spec_helper.js
-lib/jazz/spec_runner.haml
+lib/jazz/spec_runner.html.haml
 lib/jazz/spec_runner.js
-new.wk
 spec/.jslintrbrc
 spec/example/hello_world_spec.js
 spec/example/nested/HelloWorldSpec.js

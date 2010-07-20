@@ -6,6 +6,7 @@ $wake = ""
 
 require 'pathname'
 require 'jazz/options'
+require 'uri'
 
 JAZZ_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'jazz'))
 
@@ -222,7 +223,10 @@ class SAX < Nokogiri::XML::SAX::Document
       tc[:name] = @testsuite_name + " : " + attrs["name"]
       @testcase_failed = false
     when "failure";
-      $success[-1] = false
+      # a corner case I current can't force ...
+      if $success.length > 0
+        $success[-1] = false
+      end
       $spec_info[:failures] << (tc = $spec_info[:specs].last)
       tc[:message] = attrs["message"]
       @testcase_failed = true
@@ -289,6 +293,7 @@ module WriteToNokogiri
       @parser = Nokogiri::XML::SAX::PushParser.new( SAX.new )
     rescue Exception => e
       $stderr.puts "Parser raised #{e} on #{data}"
+      $stderr.puts e.backtrace
       exit 1
     end
   end

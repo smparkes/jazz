@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 
-ignore "{vendor,lib/jazz/qunit/qunit.js}"
+ignore "{bin,pkg,vendor,lib/jazz/qunit/qunit.js}"
 
 haml
-jslintrb
+jslint_rb
 
 jazz "example/**/*"
