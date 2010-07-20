@@ -25,10 +25,19 @@ end.parse!
 $jazz_browser = "firefox" if !$jazz_browser
 
 if $jazz_browser =~ /chrome|chromium/
+  if $jazz_browser =~ /chrome/
+    if %x(uname -a | grep Darwin) != ""
+      $jazz_browser = 'Google\ Chrome'
+    end
+  end
   $jazz_browser += " --allow-file-access-from-files"
 end
 
 if $jazz_browser =~ /firefox/
+  if %x(uname -a | grep Darwin) != ""
+    $jazz_browser = "firefox-bin"
+  end
+
   $jazz_browser += " -P jazz"
 end
 
