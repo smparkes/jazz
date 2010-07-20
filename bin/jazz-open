@@ -22,6 +22,10 @@ OptionParser.new do |o|
 
 end.parse!
 
+if $jazz_browser =~ /chrome|chromium/
+  $jazz_browser += " --allow-file-access-from-files"
+end
+
 prefix = nil
 
 if $jazz_http
