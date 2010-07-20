@@ -11,19 +11,19 @@
         global.jazz = global.jazz || {};
         global.jazz.helper = global.jazz.helper || "../../lib/jazz/spec_helper.js";
         document.write("<script type='text/javascript' src='"+global.jazz.helper+"'></s"+"cript>");
-      }());
-    :javascript
-      (function(){
-        var match = window.location.toString().match(/\?specs=([^&]+)/);
+
+        var base = window.location.toString().match(/(\?|&)base=([^&]+)/);
+        if (base) {
+          global.jazz.app_root = global.jazz.app_root || base[2];
+          // console.debug("base",global.jazz.app_root);
+        }
+        var match = window.location.toString().match(/(\?|&)specs=([^&]+)/);
+        // console.debug("match",match);
         if(match){
-          var specs = JSON.parse(unescape(match[1]));
+          var specs = JSON.parse(unescape(match[2]));
           for(var i=0; i < specs.length; i++ ) {
             document.write("<script type='text/javascript' src='" + specs[i] +"'></s"+"cript>");
           }
         }
       }());
-
-/ Local Variables:
-/ mode:auto-revert
-/ End:
 
