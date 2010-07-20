@@ -5,4 +5,4 @@ ignore "{bin,pkg,vendor,lib/jazz/qunit/qunit.js}"
 haml
 jslint_rb
 
-jazz "example/**/*"
+jazz "{,spec/}example/**/*"
