@@ -41,6 +41,7 @@ runner = "file://" + File.expand_path( File.join( File.dirname(__FILE__), "..", 
 files = []
 pairs = {}
 
+helpers =  Dir["spec/**/{spec_helper,SpecHelper}.js"]
 specs = Dir["spec/**/*[sS]pec.js"]
 specs = specs.select do |spec|
   html = spec.dup
@@ -53,6 +54,7 @@ specs = specs.select do |spec|
   !File.exist?(html)
 end
 
+specs = helpers + specs
 specs.map! do |spec|
   $jazz_http ? prefix + spec : "file://" + File.expand_path(spec)
 end
@@ -72,7 +74,9 @@ else
     s
   end
 
-  files << "'#{runner}?specs=#{URI.escape(specs.to_json)}'"
+  cwd = "file://" + File.expand_path(".")
+
+  files << "'#{runner}?base=#{URI.escape(cwd)}&specs=#{URI.escape(specs.to_json)}'"
 
   if ARGV.length > 0
     files = files.select do |file|
