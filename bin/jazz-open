@@ -94,9 +94,16 @@ else
     end
   end
 
-  for file in files do
+  if false
+    for file in files do
+      app = $jazz_browser || "firefox"
+      cmd = "#{app} #{file}"
+      puts cmd
+      system cmd
+    end
+  else 
     app = $jazz_browser || "firefox"
-    cmd = "#{app} #{file}"
+    cmd = "#{app} #{files.join(' ')}"
     puts cmd
     system cmd
   end
