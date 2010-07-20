@@ -5,7 +5,8 @@
     return;
   }
   window.jazz = window.jazz || {};
-  window.jazz.root = window.jazz.root || "..";
+  window.jazz.app_root = window.jazz.app_root || "..";
+  window.jazz.root = window.jazz.root || window.jazz.app_root;
   window.jazz.helper = window.jazz.helper || window.jazz.root+"/lib/jazz/spec_helper.js";
   document.write("<script type='text/javascript' src='"+window.jazz.helper+"'></script>");
 }());
