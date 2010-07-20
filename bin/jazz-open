@@ -22,8 +22,14 @@ OptionParser.new do |o|
 
 end.parse!
 
+$jazz_browser = "firefox" if !$jazz_browser
+
 if $jazz_browser =~ /chrome|chromium/
   $jazz_browser += " --allow-file-access-from-files"
+end
+
+if $jazz_browser =~ /firefox/
+  $jazz_browser += " -P jazz"
 end
 
 prefix = nil
@@ -66,7 +72,7 @@ end
 if false
   files = files.join("?specs=true' '#{prefix}")
   files = "'#{prefix}#{files}?specs=true'" if files
-  app = $jazz_browser || "firefox"
+  app = $jazz_browser
   cmd = "#{app} #{files} '#{runner}?specs=#{URI.escape(specs.to_json)}'"
   puts cmd
   system cmd
@@ -96,13 +102,13 @@ else
 
   if false
     for file in files do
-      app = $jazz_browser || "firefox"
+      app = $jazz_browser
       cmd = "#{app} #{file}"
       puts cmd
       system cmd
     end
   else 
-    app = $jazz_browser || "firefox"
+    app = $jazz_browser
     cmd = "#{app} #{files.join(' ')}"
     puts cmd
     system cmd
