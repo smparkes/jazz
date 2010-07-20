@@ -60,7 +60,7 @@ end
 if false
   files = files.join("?specs=true' '#{prefix}")
   files = "'#{prefix}#{files}?specs=true'" if files
-  app = "firefox"
+  app = $jazz_browser || "firefox"
   cmd = "#{app} #{files} '#{runner}?specs=#{URI.escape(specs.to_json)}'"
   puts cmd
   system cmd
@@ -87,7 +87,7 @@ else
   end
 
   for file in files do
-    app = "firefox"
+    app = $jazz_browser || "firefox"
     cmd = "#{app} #{file}"
     puts cmd
     system cmd
