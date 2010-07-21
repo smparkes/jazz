@@ -29,6 +29,11 @@ if $jazz_browser =~ /chrome|chromium/
 end
 
 if $jazz_browser =~ /firefox/
+
+  if %x(uname -a | grep Darwin) != ""
+    $jazz_browser = "firefox-bin"
+  end
+
   $jazz_browser += " -P jazz"
 end
 
