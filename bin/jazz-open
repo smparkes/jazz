@@ -31,6 +31,7 @@ if $jazz_browser =~ /chrome|chromium/
     end
   end
   $jazz_browser += " --allow-file-access-from-files"
+  $jazz_browser += " --user-data-dir=.chrome"
 end
 
 if $jazz_browser =~ /firefox/
